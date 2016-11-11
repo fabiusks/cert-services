@@ -6,6 +6,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.util.Date;
 
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -16,6 +17,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
@@ -24,6 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * 
+ * @author fabio.resner
+ *
+ */
 @Service
 public class CertificateGenerator {
 
@@ -35,6 +42,10 @@ public class CertificateGenerator {
 	
 	private static final int YEAR_IN_MILLI = 365 * 24 * 60 * 60 * 1000;
 	private static final int DAY_IN_MILLI = 24 * 60 * 60 * 1000;
+	
+	public CertificateGenerator() {
+		Security.addProvider(new BouncyCastleProvider());
+	}
 	
 	public X509CertificateHolder generateCertificate(String subjectName, String issuerName) {
 		try {

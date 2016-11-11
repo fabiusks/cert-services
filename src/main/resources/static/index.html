@@ -6,5 +6,19 @@
 </head>
 <body>
 	<h1>Certificate Services Framework</h1>
+	<h2>Certificate Generation</h2>
+	<div>
+	<form name="certGenForm" action="http://localhost:8080/rest/cert/new" method="POST">
+		<label>Enter the issuer name:</label>
+		<input type="text" id="issuerField" name="issuer" value="CN=Issuer">
+		<p></p>
+		
+		<label>Enter the subject name:</label>
+		<input type="text" id="subjectField" name="subject" value="CN=Subject">
+		<p></p>
+		
+		<button type="submit">Generate</button>
+	</form>
+	</div>
 </body>
 </html>
