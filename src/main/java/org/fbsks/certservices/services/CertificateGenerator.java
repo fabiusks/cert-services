@@ -2,10 +2,8 @@ package org.fbsks.certservices.services;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Date;
 
@@ -36,31 +34,27 @@ public class CertificateGenerator {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
 
-	private static final String KEYS_ALG = "RSA";
-	private static final String BC_PROV = "BC";
 	private static final String SIG_HASH_ALG = "SHA256withRSA";
 	
 	private static final int YEAR_IN_MILLI = 365 * 24 * 60 * 60 * 1000;
 	private static final int DAY_IN_MILLI = 24 * 60 * 60 * 1000;
 	
+	private static final String CN_FORMAT = "CN=";
+	
 	public CertificateGenerator() {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 	
-	public X509CertificateHolder generateCertificate(String subjectName, String issuerName) {
+	public X509CertificateHolder generateCertificate(String subjectName, String issuerName, KeyPair keyPair) {
 		try {
-			KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEYS_ALG, BC_PROV);
-			keyGen.initialize(4096, new SecureRandom());
-			KeyPair keyPair = keyGen.generateKeyPair();
-
 			PrivateKey privateKey= keyPair.getPrivate();
 			PublicKey publicKey = keyPair.getPublic();
 
 			byte[] encoded = publicKey.getEncoded();
 			SubjectPublicKeyInfo subPubKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(encoded));
 
-			X500Name subject = new X500Name(subjectName);
-			X500Name issuer = new X500Name(subjectName);
+			X500Name subject = new X500Name(CN_FORMAT + subjectName);
+			X500Name issuer = new X500Name(CN_FORMAT + subjectName);
 
 			Date startDate = new Date(System.currentTimeMillis() - DAY_IN_MILLI);
 			Date endDate = new Date(System.currentTimeMillis() + YEAR_IN_MILLI);
@@ -84,7 +78,7 @@ public class CertificateGenerator {
 		} 
 	}
 
-	public X509CertificateHolder generateSelfSignedCertificate(String subjectName) {
-		return this.generateCertificate(subjectName, subjectName);
+	public X509CertificateHolder generateSelfSignedCertificate(String subjectName, KeyPair keyPair) {
+		return this.generateCertificate(subjectName, subjectName, keyPair);
 	}
 }

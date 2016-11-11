@@ -1,8 +1,11 @@
 package org.fbsks.certservices.model;
 
+import java.security.PrivateKey;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
@@ -20,10 +23,15 @@ public class CertificateAuthority extends AbstractPersistable<Long> {
 	
 	protected CertificateAuthority() {}
 	
-	public CertificateAuthority(String caName, byte[] certificate, byte[] privateKey) {
-		this.certificate = certificate;
-		this.privateKey = privateKey;
-		this.caName = caName;
+	public CertificateAuthority(String caName, X509CertificateHolder certificate, PrivateKey privateKey) {
+		try {
+			this.certificate = certificate.getEncoded();
+			this.privateKey = privateKey.getEncoded();
+			this.caName = caName;
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Error while creating certificate authority: " + e.getMessage());
+		}
 	}
 
 	public String getCaName() {

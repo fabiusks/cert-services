@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.util.encoders.Base64;
+import org.fbsks.certservices.model.CertificateKeyPairGenerator;
 import org.fbsks.certservices.services.CertificateGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,14 @@ public class CertificatesController {
 	@Autowired
 	private CertificateGenerator certGenerator;
 	
+	@Autowired
+	private CertificateKeyPairGenerator keyPairGenerator;
+	
 	@RequestMapping(path="/new/self-signed", method=RequestMethod.POST)
 	public ResponseEntity<byte[]> generateSelfSignedCerficate() throws IOException {
 		LOGGER.info("Received new self-signed certificate request");
 		
-		X509CertificateHolder certificate = certGenerator.generateSelfSignedCertificate("CN=TestSubject");
+		X509CertificateHolder certificate = certGenerator.generateSelfSignedCertificate("CN=TestSubject", keyPairGenerator.generateKeyPair());
 		
 		return ResponseEntity.ok()
 				.header("content-disposition", "attachment; filename=" + certificate.getSubject() + ".cer")

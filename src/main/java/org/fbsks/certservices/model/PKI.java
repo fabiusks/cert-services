@@ -1,5 +1,6 @@
 package org.fbsks.certservices.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -19,8 +20,11 @@ public class PKI extends AbstractPersistable<Long> {
 	
 	protected PKI() {}
 	
-	public PKI(String name) {
+	public PKI(String name, CertificateAuthority rootCA) {
 		this.name = name;
+		
+		this.cas = new ArrayList<CertificateAuthority>();
+		this.cas.add(rootCA);
 	}
 
 	public List<CertificateAuthority> getCas() {
