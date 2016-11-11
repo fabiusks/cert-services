@@ -27,17 +27,6 @@ public class CertificatesController {
 	@Autowired
 	private CertificateGenerator certGenerator;
 	
-	@RequestMapping(path="/new", method=RequestMethod.POST)
-	public ResponseEntity<byte[]> generateCerficate() throws IOException {
-		LOGGER.info("Received new certificate request");
-
-		X509CertificateHolder certificate = certGenerator.generateCertificate("CN=TestSubject", "CN=TestIssuer");
-		
-		return ResponseEntity.ok()
-				.header("content-disposition", "attachment; filename=" + certificate.getSubject() + ".cer")
-				.body(Base64.encode(certificate.getEncoded()));
-	}
-	
 	@RequestMapping(path="/new/self-signed", method=RequestMethod.POST)
 	public ResponseEntity<byte[]> generateSelfSignedCerficate() throws IOException {
 		LOGGER.info("Received new self-signed certificate request");

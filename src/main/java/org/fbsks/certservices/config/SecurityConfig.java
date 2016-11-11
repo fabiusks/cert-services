@@ -21,5 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/**").permitAll()
 				.and()
 				.csrf().disable();
+		http
+			.headers()
+				.frameOptions().sameOrigin();
 	}	
 }
