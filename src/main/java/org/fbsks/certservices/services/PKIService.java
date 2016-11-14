@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class PKIService {
 
 	@Autowired
-	private CertificateService certificateGenerator;
+	private CertificateService certificateService;
 	
 	@Autowired
 	private CertificateKeyPairGenerator keyPairGenerator;
@@ -37,7 +37,7 @@ public class PKIService {
 	public PKI generatePKI(String pkiName) {
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		
-		X509CertificateHolder rootCertificate = this.certificateGenerator.generateSelfSignedCertificate(pkiName + ROOT_CA, keyPair);
+		X509CertificateHolder rootCertificate = this.certificateService.generateSelfSignedCertificate(pkiName + ROOT_CA, keyPair);
 		
 		CertificateAuthority rootCa = new CertificateAuthority(pkiName + ROOT_CA, rootCertificate, keyPair.getPrivate());
 		caRepository.save(rootCa);
@@ -52,5 +52,20 @@ public class PKIService {
 	
 	public List<PKI> listPKIs() {
 		return pkiRepository.findAll();
+	}
+
+	public X509CertificateHolder generateCertificate(PKI pki, String subjectName) {	
+		PKI retrievedPKI = pkiRepository.findOneByName(pki.getName());
+		
+		if(retrievedPKI == null) {
+			throw new RuntimeException("Unable to find PKI with name: " + pki.getName());
+		}
+		
+		X509CertificateHolder rootCertificate = retrievedPKI.getCas().get(0).getCertificate();
+		KeyPair keyPair = keyPairGenerator.generateKeyPair();
+		
+		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), keyPair);
+		
+		return finalUserCertificate;
 	}
 }

@@ -1,9 +1,11 @@
 package org.fbsks.certservices.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.fbsks.certservices.Repository.PKIRepository;
 import org.fbsks.certservices.model.PKI;
 import org.junit.Test;
@@ -30,6 +32,7 @@ public class PKIServiceTest {
 	private PKIRepository pkiRepository; 
 	
 	private static final String TEST_PKI_NAME = "TESTPKI";
+	private static final String TEST_FINAL_USER_CERT_NAME = "TestFinalUser";
 	
 	@Test
 	public void shouldGeneratePKIOnlyWithRootCA() {
@@ -53,5 +56,14 @@ public class PKIServiceTest {
 		
 		assertEquals(1, pkis.size());
 		assertEquals(TEST_PKI_NAME, pkis.get(0).getName());
+	}
+	
+	@Test
+	public void shouldGenerateFinalUserCertificateOnExistingCA() {
+		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
+		
+		X509CertificateHolder finalUserCertificate = this.pkiService.generateCertificate(pki, TEST_FINAL_USER_CERT_NAME);
+		assertEquals(finalUserCertificate.getIssuer(), pki.getCas().get(0).getCertificate().getSubject());
+		
 	}
 }

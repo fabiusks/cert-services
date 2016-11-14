@@ -30,6 +30,9 @@ public class CertificateServiceTest {
 	
 	private static final String SUBJECT_NAME = "TestSubject";
 	private static final String FINAL_SUBJECT_NAME = "CN=TestSubject";
+	
+	private static final String ISSUER_NAME = "TestIssuer";
+	private static final String FINAL_ISSUER_NAME = "CN=TestIssuer";
 
 	@Before
 	public void setUp() throws OperatorCreationException, NoSuchAlgorithmException, IOException, NoSuchProviderException {
@@ -54,7 +57,18 @@ public class CertificateServiceTest {
 	}
 	
 	@Test
-	public void shouldFailGeneratingCertificateBecauseOfInvalidKeyPair() {
+	public void shouldGenerateCertificate() {
+		CertificateKeyPairGenerator keyPairGenerator = new CertificateKeyPairGenerator();
 		
+		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, ISSUER_NAME, keyPairGenerator.generateKeyPair());
+
+		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_ISSUER_NAME));
+		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
+		assertEquals(certHolder.isValidOn(new Date()), true);
+	}
+	
+	@Test
+	public void shouldFailGeneratingCertificateBecauseOfInvalidKeyPair() {
+		//TODO
 	}
 }

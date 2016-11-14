@@ -22,7 +22,10 @@ public class CertificateKeyPairGeneratorTest {
 	@Autowired
 	private CertificateKeyPairGenerator keyGenerator;
 
-	private static final int KEY_SIZE_1024 = 1024;
+	/*
+	 * Lower key-size for faster test execution
+	 */
+	private static final int KEY_SIZE_1024 = 128;
 	
 	@Test
 	public void shouldGenerateDefaultKeyPair() {

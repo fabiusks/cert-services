@@ -54,7 +54,7 @@ public class CertificateService {
 			SubjectPublicKeyInfo subPubKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(encoded));
 
 			X500Name subject = new X500Name(CN_FORMAT + subjectName);
-			X500Name issuer = new X500Name(CN_FORMAT + subjectName);
+			X500Name issuer = new X500Name(CN_FORMAT + issuerName);
 
 			Date startDate = new Date(System.currentTimeMillis() - DAY_IN_MILLI);
 			Date endDate = new Date(System.currentTimeMillis() + YEAR_IN_MILLI);
