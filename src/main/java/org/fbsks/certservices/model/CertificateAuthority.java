@@ -3,6 +3,7 @@ package org.fbsks.certservices.model;
 import java.security.PrivateKey;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -11,11 +12,22 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 public class CertificateAuthority extends AbstractPersistable<Long> {
 
+	public PKI getPki() {
+		return pki;
+	}
+
+	public void setPki(PKI pki) {
+		this.pki = pki;
+	}
+
 	private static final long serialVersionUID = 2939716867481218950L;
 	
 	private String caName;
 	
+	@Lob
 	private byte[] certificate;
+
+	@Lob
 	private byte[] privateKey;
 	
 	@ManyToOne
