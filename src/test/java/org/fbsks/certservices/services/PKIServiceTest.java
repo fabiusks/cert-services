@@ -62,7 +62,7 @@ public class PKIServiceTest {
 	public void shouldGenerateFinalUserCertificateOnExistingCA() {
 		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
 		
-		X509CertificateHolder finalUserCertificate = this.pkiService.generateCertificate(pki, TEST_FINAL_USER_CERT_NAME);
+		X509CertificateHolder finalUserCertificate = this.pkiService.generateCertificate(pki.getName(), TEST_FINAL_USER_CERT_NAME);
 		assertEquals(finalUserCertificate.getIssuer(), pki.getCas().get(0).getCertificate().getSubject());
 		
 	}

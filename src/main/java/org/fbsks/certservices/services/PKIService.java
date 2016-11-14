@@ -54,11 +54,11 @@ public class PKIService {
 		return pkiRepository.findAll();
 	}
 
-	public X509CertificateHolder generateCertificate(PKI pki, String subjectName) {	
-		PKI retrievedPKI = pkiRepository.findOneByName(pki.getName());
+	public X509CertificateHolder generateCertificate(String pkiName, String subjectName) {	
+		PKI retrievedPKI = pkiRepository.findOneByName(pkiName);
 		
 		if(retrievedPKI == null) {
-			throw new RuntimeException("Unable to find PKI with name: " + pki.getName());
+			throw new RuntimeException("Unable to find PKI with name: " + pkiName);
 		}
 		
 		X509CertificateHolder rootCertificate = retrievedPKI.getCas().get(0).getCertificate();

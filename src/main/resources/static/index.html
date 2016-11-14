@@ -8,14 +8,25 @@
 	<h1>Certificate Services Framework</h1>
 	
 	<div>
+	<h2>Self Signed Certificate Generation</h2>
+	<form name="certGenForm" action="http://localhost:8080/rest/cert/new/self-signed" method="POST">		
+		<label>Enter the subject name:</label>
+		<input type="text" id="subjectField" name="subject" placeholder="Subject">
+		<p></p>
+		
+		<button type="submit">Generate</button>
+	</form>
+	</div>
+	
+	<div>
 	<h2>Certificate Generation</h2>
-	<form name="certGenForm" action="http://localhost:8080/rest/cert/new/self-signed" method="POST">
+	<form name="certGenForm" action="http://localhost:8080/rest/cert/new" method="POST">
 		<label>Enter the issuer name:</label>
-		<input type="text" id="issuerField" name="issuer" value="CN=Issuer">
+		<input type="text" id="issuerField" name="issuer" placeholder="Issuer">
 		<p></p>
 		
 		<label>Enter the subject name:</label>
-		<input type="text" id="subjectField" name="subject" value="CN=Subject">
+		<input type="text" id="subjectField" name="subject" placeholder="Subject">
 		<p></p>
 		
 		<button type="submit">Generate</button>
@@ -26,7 +37,7 @@
 	<h2>PKI Generation</h2>
 	<form name="pkiGenForm" action="http://localhost:8080/rest/pki/new" method="POST">
 		<label>Enter the issuer name:</label>
-		<input type="text" id="pkiName" name="pkiName" value="PKI Name">
+		<input type="text" id="pkiName" name="pkiName" placeholder="PKI Name">
 		<p></p>
 		
 		<button type="submit">Generate</button>
@@ -36,6 +47,21 @@
 	<div>
 	<h2>PKI List</h2>
 		<div id="pkiList"></div>
+	</div>
+	
+	<div>
+	<h2>PKI Certificate Generation</h2>
+	<form name="certGenForm" action="http://localhost:8080/rest/pki/cert/new" method="POST">
+		<label>Enter the PKI name:</label>
+		<input type="text" id="pkiName" name="pkiName" placeholder="PKI Name">
+		<p></p>
+		
+		<label>Enter the subject name:</label>
+		<input type="text" id="subjectField" name="subjectName" placeholder="Subject">
+		<p></p>
+		
+		<button type="submit">Generate</button>
+	</form>
 	</div>
 </body>
 

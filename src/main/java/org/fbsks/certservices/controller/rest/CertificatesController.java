@@ -31,6 +31,8 @@ public class CertificatesController {
 	@Autowired
 	private CertificateKeyPairGenerator keyPairGenerator;
 	
+	//TODO Review exception thrown at this point
+	//TODO Response Entity returning could be revised (could be done better)
 	@RequestMapping(path="/new/self-signed", method=RequestMethod.POST)
 	public ResponseEntity<byte[]> generateSelfSignedCerficate() throws IOException {
 		LOGGER.info("Received new self-signed certificate request");
