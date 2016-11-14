@@ -19,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class PKIGeneratorTest {
+public class PKIServiceTest {
 
 	@Autowired
-	private PKIService pkiGenerator;
+	private PKIService pkiService;
 	
 	@Autowired
 	private PKIRepository pkiRepository; 
@@ -31,7 +31,7 @@ public class PKIGeneratorTest {
 	
 	@Test
 	public void shouldGeneratePKIOnlyWithRootCA() {
-		this.pkiGenerator.generatePKI(TEST_PKI_NAME);
+		this.pkiService.generatePKI(TEST_PKI_NAME);
 		
 		PKI pki = pkiRepository.findOneByName(TEST_PKI_NAME);
 		

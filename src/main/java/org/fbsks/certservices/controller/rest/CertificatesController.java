@@ -26,7 +26,7 @@ public class CertificatesController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CertificatesController.class);
 
 	@Autowired
-	private CertificateService certGenerator;
+	private CertificateService certService;
 	
 	@Autowired
 	private CertificateKeyPairGenerator keyPairGenerator;
@@ -35,7 +35,7 @@ public class CertificatesController {
 	public ResponseEntity<byte[]> generateSelfSignedCerficate() throws IOException {
 		LOGGER.info("Received new self-signed certificate request");
 		
-		X509CertificateHolder certificate = certGenerator.generateSelfSignedCertificate("CN=TestSubject", keyPairGenerator.generateKeyPair());
+		X509CertificateHolder certificate = certService.generateSelfSignedCertificate("CN=TestSubject", keyPairGenerator.generateKeyPair());
 		
 		return ResponseEntity.ok()
 				.header("content-disposition", "attachment; filename=" + certificate.getSubject() + ".cer")

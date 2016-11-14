@@ -6,7 +6,10 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import org.fbsks.certservices.controller.rest.jsonview.PKISummary;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
 public class PKI extends AbstractPersistable<Long> {
@@ -16,6 +19,7 @@ public class PKI extends AbstractPersistable<Long> {
 	@OneToMany
 	private List<CertificateAuthority> cas; 
 	
+	@JsonView(PKISummary.class)
 	private String name;
 	
 	protected PKI() {}

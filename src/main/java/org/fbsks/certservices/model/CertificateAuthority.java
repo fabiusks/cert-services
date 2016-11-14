@@ -3,6 +3,7 @@ package org.fbsks.certservices.model;
 import java.security.PrivateKey;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
@@ -23,6 +24,7 @@ public class CertificateAuthority extends AbstractPersistable<Long> {
 	private byte[] privateKey;
 	
 	@ManyToOne
+	@JoinColumn
 	private PKI pki;
 	
 	protected CertificateAuthority() {}

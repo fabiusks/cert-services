@@ -1,6 +1,7 @@
 package org.fbsks.certservices.services;
 
 import java.security.KeyPair;
+import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.fbsks.certservices.Repository.CertificateAuthorityRepository;
@@ -47,5 +48,9 @@ public class PKIService {
 		pkiRepository.save(pki);
 	
 		return pki;
+	}
+	
+	public List<PKI> listPKIs() {
+		return pkiRepository.findAll();
 	}
 }
