@@ -26,14 +26,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class CertificateGeneratorTest {
 	
-	private CertificateGenerator certificateGenerator;
+	private CertificateService certificateGenerator;
 	
-	private static final String SUBJECT_NAME = "CN=TestSubject";
+	private static final String SUBJECT_NAME = "TestSubject";
+	private static final String FINAL_SUBJECT_NAME = "CN=TestSubject";
 
 	@Before
 	public void setUp() throws OperatorCreationException, NoSuchAlgorithmException, IOException, NoSuchProviderException {
 		Security.addProvider(new BouncyCastleProvider());
-		this.certificateGenerator = new CertificateGenerator();
+		this.certificateGenerator = new CertificateService();
 	}
 
 	@Test
@@ -42,8 +43,8 @@ public class CertificateGeneratorTest {
 		
 		X509CertificateHolder certHolder = this.certificateGenerator.generateSelfSignedCertificate(SUBJECT_NAME, keyPairGenerator.generateKeyPair());
 
-		assertEquals(certHolder.getIssuer(), new X500Name(SUBJECT_NAME));
-		assertEquals(certHolder.getSubject(), new X500Name(SUBJECT_NAME));
+		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_SUBJECT_NAME));
+		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
 		assertEquals(certHolder.isValidOn(new Date()), true);
 	}
 }

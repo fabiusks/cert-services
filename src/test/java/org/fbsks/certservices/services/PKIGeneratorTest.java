@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PKIGeneratorTest {
 
 	@Autowired
-	private PKIGenerator pkiGenerator;
+	private PKIService pkiGenerator;
 	
 	@Autowired
 	private PKIRepository pkiRepository; 

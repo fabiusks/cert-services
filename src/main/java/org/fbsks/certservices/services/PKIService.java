@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class PKIGenerator {
+public class PKIService {
 
 	@Autowired
-	private CertificateGenerator certificateGenerator;
+	private CertificateService certificateGenerator;
 	
 	@Autowired
 	private CertificateKeyPairGenerator keyPairGenerator;

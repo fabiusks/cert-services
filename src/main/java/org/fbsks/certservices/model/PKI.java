@@ -11,14 +11,6 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 public class PKI extends AbstractPersistable<Long> {
 
-	public void setCas(List<CertificateAuthority> cas) {
-		this.cas = cas;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	private static final long serialVersionUID = -140537791349423216L;
 
 	@OneToMany
@@ -46,5 +38,13 @@ public class PKI extends AbstractPersistable<Long> {
 
 	public String getName() {
 		return name;
+	}
+	
+	public void setCas(List<CertificateAuthority> cas) {
+		this.cas = cas;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

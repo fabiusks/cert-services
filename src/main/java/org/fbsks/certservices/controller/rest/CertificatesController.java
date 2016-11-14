@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.util.encoders.Base64;
 import org.fbsks.certservices.model.CertificateKeyPairGenerator;
-import org.fbsks.certservices.services.CertificateGenerator;
+import org.fbsks.certservices.services.CertificateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class CertificatesController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CertificatesController.class);
 
 	@Autowired
-	private CertificateGenerator certGenerator;
+	private CertificateService certGenerator;
 	
 	@Autowired
 	private CertificateKeyPairGenerator keyPairGenerator;

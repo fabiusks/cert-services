@@ -30,9 +30,9 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class CertificateGenerator {
+public class CertificateService {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(CertificateService.class);
 
 	private static final String SIG_HASH_ALG = "SHA256withRSA";
 	
@@ -41,7 +41,7 @@ public class CertificateGenerator {
 	
 	private static final String CN_FORMAT = "CN=";
 	
-	public CertificateGenerator() {
+	public CertificateService() {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 	
