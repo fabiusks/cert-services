@@ -2,6 +2,8 @@ package org.fbsks.certservices.services;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.fbsks.certservices.Repository.PKIRepository;
 import org.fbsks.certservices.model.PKI;
 import org.junit.Test;
@@ -38,5 +40,18 @@ public class PKIServiceTest {
 		assertEquals(TEST_PKI_NAME, pki.getName());
 		assertNotNull(pki);
 		assertEquals(true, pki.getCas().size() > 0);
+	}
+	
+	@Test
+	public void shouldListPKIsCorrectly() {
+		List<PKI> pkis = this.pkiService.listPKIs();
+		
+		assertEquals(0, pkis.size());
+		
+		this.pkiService.generatePKI(TEST_PKI_NAME);
+		pkis = this.pkiService.listPKIs();
+		
+		assertEquals(1, pkis.size());
+		assertEquals(TEST_PKI_NAME, pkis.get(0).getName());
 	}
 }

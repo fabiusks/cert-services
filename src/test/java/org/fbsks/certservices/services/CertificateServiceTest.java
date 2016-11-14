@@ -46,5 +46,15 @@ public class CertificateServiceTest {
 		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_SUBJECT_NAME));
 		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
 		assertEquals(certHolder.isValidOn(new Date()), true);
+		
+		/*
+		 * On a self signed certificate, issuer and subject names must be the same
+		 */
+		assertEquals(certHolder.getIssuer(), certHolder.getSubject());
+	}
+	
+	@Test
+	public void shouldFailGeneratingCertificateBecauseOfInvalidKeyPair() {
+		
 	}
 }
