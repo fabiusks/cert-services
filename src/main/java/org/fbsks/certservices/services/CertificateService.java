@@ -45,13 +45,10 @@ public class CertificateService {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 	
-	public X509CertificateHolder generateCertificate(String subjectName, String issuerName, KeyPair keyPair) {
+	public X509CertificateHolder generateCertificate(String subjectName, PublicKey subjectPublicKey, String issuerName, PrivateKey issuerPrivateKey) {
 		try {
-			PrivateKey privateKey= keyPair.getPrivate();
-			PublicKey publicKey = keyPair.getPublic();
-
-			byte[] encoded = publicKey.getEncoded();
-			SubjectPublicKeyInfo subPubKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(encoded));
+			byte[] encodedPublicKey = subjectPublicKey.getEncoded();
+			SubjectPublicKeyInfo subjectPubKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(encodedPublicKey));
 
 			X500Name subject = new X500Name(CN_FORMAT + subjectName);
 			X500Name issuer = new X500Name(CN_FORMAT + issuerName);
@@ -59,9 +56,9 @@ public class CertificateService {
 			Date startDate = new Date(System.currentTimeMillis() - DAY_IN_MILLI);
 			Date endDate = new Date(System.currentTimeMillis() + YEAR_IN_MILLI);
 
-			X509v3CertificateBuilder v3CertGen = new X509v3CertificateBuilder(issuer, BigInteger.ONE, startDate, endDate, subject, subPubKeyInfo);
+			X509v3CertificateBuilder v3CertGen = new X509v3CertificateBuilder(issuer, BigInteger.ONE, startDate, endDate, subject, subjectPubKeyInfo);
 
-			AsymmetricKeyParameter privateKeyParam = PrivateKeyFactory.createKey(privateKey.getEncoded());
+			AsymmetricKeyParameter privateKeyParam = PrivateKeyFactory.createKey(issuerPrivateKey.getEncoded());
 
 			AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_HASH_ALG);
 			AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
@@ -79,6 +76,6 @@ public class CertificateService {
 	}
 
 	public X509CertificateHolder generateSelfSignedCertificate(String subjectName, KeyPair keyPair) {
-		return this.generateCertificate(subjectName, subjectName, keyPair);
+		return this.generateCertificate(subjectName, keyPair.getPublic(), subjectName, keyPair.getPrivate());
 	}
 }

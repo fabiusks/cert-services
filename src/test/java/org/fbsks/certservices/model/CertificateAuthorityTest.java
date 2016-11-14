@@ -30,7 +30,7 @@ public class CertificateAuthorityTest {
 		this.keyPairGenerator = new CertificateKeyPairGenerator();
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		
-		X509CertificateHolder certificate = certificateService.generateCertificate("Test", "test", keyPair);
+		X509CertificateHolder certificate = certificateService.generateCertificate("TestSubject", keyPair.getPublic(), "testIssuer", keyPair.getPrivate());
 		
 		new CertificateAuthority("New CA", certificate, keyPair.getPrivate());
 	}

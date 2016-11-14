@@ -3,13 +3,19 @@ package org.fbsks.certservices.services;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.fbsks.certservices.model.CertificateKeyPairGenerator;
@@ -41,6 +47,7 @@ public class CertificateServiceTest {
 	}
 
 	@Test
+	//TODO The return of those services need to be the user PKCS12, with the certificate and private key
 	public void shouldGenerateSelfSignedCertificate() throws IOException {
 		CertificateKeyPairGenerator keyPairGenerator = new CertificateKeyPairGenerator();
 		
@@ -57,14 +64,22 @@ public class CertificateServiceTest {
 	}
 	
 	@Test
-	public void shouldGenerateCertificate() {
+	//TODO The return of those services need to be the user PKCS12, with the certificate and private key
+	//TODO Start changings from HERE
+	public void shouldGenerateCertificate() throws CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
 		CertificateKeyPairGenerator keyPairGenerator = new CertificateKeyPairGenerator();
 		
-		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, ISSUER_NAME, keyPairGenerator.generateKeyPair());
+		KeyPair issuerKeyPair = keyPairGenerator.generateKeyPair();
+		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
+		
+		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, userKeyPair.getPublic(), ISSUER_NAME, issuerKeyPair.getPrivate());
 
 		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_ISSUER_NAME));
 		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
 		assertEquals(certHolder.isValidOn(new Date()), true);
+		
+		X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(certHolder);
+		certificate.verify(issuerKeyPair.getPublic());
 	}
 	
 	@Test

@@ -3,10 +3,12 @@ package org.fbsks.certservices.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.security.KeyPair;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.fbsks.certservices.Repository.PKIRepository;
+import org.fbsks.certservices.model.CertificateKeyPairGenerator;
 import org.fbsks.certservices.model.PKI;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,10 +61,17 @@ public class PKIServiceTest {
 	}
 	
 	@Test
+	//TODO Fix IT accordingly to new parameters
 	public void shouldGenerateFinalUserCertificateOnExistingCA() {
 		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
 		
-		X509CertificateHolder finalUserCertificate = this.pkiService.generateCertificate(pki.getName(), TEST_FINAL_USER_CERT_NAME);
+		CertificateKeyPairGenerator keyGenerator = new CertificateKeyPairGenerator();
+		
+		KeyPair subjectKeyPair = keyGenerator.generateKeyPair();
+		PKI retrievedPKI = pkiRepository.findOneByName(TEST_PKI_NAME);
+		
+		X509CertificateHolder finalUserCertificate = this.pkiService.generateCertificate(retrievedPKI.getName(), TEST_FINAL_USER_CERT_NAME);
+		
 		assertEquals(finalUserCertificate.getIssuer(), pki.getCas().get(0).getCertificate().getSubject());
 		
 	}

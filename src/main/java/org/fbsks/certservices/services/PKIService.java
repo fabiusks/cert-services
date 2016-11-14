@@ -62,9 +62,9 @@ public class PKIService {
 		}
 		
 		X509CertificateHolder rootCertificate = retrievedPKI.getCas().get(0).getCertificate();
-		KeyPair keyPair = keyPairGenerator.generateKeyPair();
+		KeyPair subjectKeyPair = keyPairGenerator.generateKeyPair();
 		
-		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), keyPair);
+		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, subjectKeyPair.getPublic(), rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), retrievedPKI.getCas().get(0).getPrivateKey());
 		
 		return finalUserCertificate;
 	}
