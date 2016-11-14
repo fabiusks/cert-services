@@ -31,8 +31,9 @@ public class CertificateAuthorityTest {
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		
 		X509CertificateHolder certificate = certificateService.generateCertificate("TestSubject", keyPair.getPublic(), "testIssuer", keyPair.getPrivate());
+		CAIdentityContainer identityContainer = new CAIdentityContainer(certificate, keyPair.getPrivate());
 		
-		new CertificateAuthority("New CA", certificate, keyPair.getPrivate());
+		new CertificateAuthority("New CA", identityContainer);
 	}
 
 }

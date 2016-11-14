@@ -4,10 +4,13 @@ import java.security.KeyPair;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.fbsks.certservices.Repository.CAIdentityContainerRepository;
 import org.fbsks.certservices.Repository.CertificateAuthorityRepository;
 import org.fbsks.certservices.Repository.PKIRepository;
+import org.fbsks.certservices.model.CAIdentityContainer;
 import org.fbsks.certservices.model.CertificateAuthority;
 import org.fbsks.certservices.model.CertificateKeyPairGenerator;
+import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,9 @@ public class PKIService {
 	@Autowired
 	private CertificateAuthorityRepository caRepository;
 	
+	@Autowired
+	private CAIdentityContainerRepository caIdentityContainerRepository;
+	
 	private static final String ROOT_CA = "ROOTCA";
 	
 	public PKI generatePKI(String pkiName) {
@@ -39,7 +45,10 @@ public class PKIService {
 		
 		X509CertificateHolder rootCertificate = this.certificateService.generateSelfSignedCertificate(pkiName + ROOT_CA, keyPair);
 		
-		CertificateAuthority rootCa = new CertificateAuthority(pkiName + ROOT_CA, rootCertificate, keyPair.getPrivate());
+		CAIdentityContainer identityContainer = new CAIdentityContainer(rootCertificate, keyPair.getPrivate());
+		caIdentityContainerRepository.save(identityContainer);
+		
+		CertificateAuthority rootCa = new CertificateAuthority(pkiName + ROOT_CA, identityContainer);
 		caRepository.save(rootCa);
 		
 		PKI pki = new PKI(pkiName, rootCa);
@@ -54,18 +63,20 @@ public class PKIService {
 		return pkiRepository.findAll();
 	}
 
-	public X509CertificateHolder generateCertificate(String pkiName, String subjectName) {	
+	public IdentityContainer generateIdentity(String pkiName, String subjectName) {	
 		PKI retrievedPKI = pkiRepository.findOneByName(pkiName);
 		
 		if(retrievedPKI == null) {
 			throw new RuntimeException("Unable to find PKI with name: " + pkiName);
 		}
 		
-		X509CertificateHolder rootCertificate = retrievedPKI.getCas().get(0).getCertificate();
-		KeyPair subjectKeyPair = keyPairGenerator.generateKeyPair();
+		X509CertificateHolder rootCertificate = retrievedPKI.getCas().get(0).getIdentityContainer().getCertificate();
+		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
 		
-		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, subjectKeyPair.getPublic(), rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), retrievedPKI.getCas().get(0).getPrivateKey());
+		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, userKeyPair.getPublic(), rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), retrievedPKI.getCas().get(0).getIdentityContainer().getPrivateKey());
 		
-		return finalUserCertificate;
+		IdentityContainer identifyContainer = new IdentityContainer(finalUserCertificate, userKeyPair.getPrivate());
+		//TODO Return identity as PKCS#12
+		return identifyContainer;
 	}
 }
