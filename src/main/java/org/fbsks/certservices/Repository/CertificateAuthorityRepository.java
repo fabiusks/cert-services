@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CertificateAuthorityRepository extends JpaRepository<CertificateAuthority, Long> {
 
+	CertificateAuthority findOneByName(String caName);
 }

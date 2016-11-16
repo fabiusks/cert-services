@@ -12,7 +12,7 @@ public class CertificateAuthority extends AbstractPersistable<Long> {
 
 	private static final long serialVersionUID = 2939716867481218950L;
 
-	private String caName;
+	private String name;
 
 	@OneToOne
 	private CAIdentityContainer identityContainer;
@@ -25,15 +25,15 @@ public class CertificateAuthority extends AbstractPersistable<Long> {
 
 	public CertificateAuthority(String caName, CAIdentityContainer identityContainer) {
 		this.identityContainer = identityContainer;
-		this.caName = caName;
+		this.name = caName;
 	}
 
-	public String getCaName() {
-		return caName;
+	public String getName() {
+		return name;
 	}
 
-	public void setCaName(String caName) {
-		this.caName = caName;
+	public void setName(String caName) {
+		this.name = caName;
 	}
 
 	public PKI getPki() {

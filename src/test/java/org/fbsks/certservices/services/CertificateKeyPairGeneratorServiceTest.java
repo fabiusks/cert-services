@@ -1,4 +1,4 @@
-package org.fbsks.certservices.model;
+package org.fbsks.certservices.services;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CertificateKeyPairGeneratorTest {
+public class CertificateKeyPairGeneratorServiceTest {
 
 	@Autowired
 	private CertificateKeyPairGeneratorService keyGenerator;

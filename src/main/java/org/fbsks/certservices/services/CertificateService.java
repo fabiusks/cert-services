@@ -8,9 +8,14 @@ import java.security.Security;
 import java.util.Date;
 
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
@@ -40,11 +45,14 @@ public class CertificateService {
 	private static final int DAY_IN_MILLI = 24 * 60 * 60 * 1000;
 	
 	private static final String CN_FORMAT = "CN=";
+	private static final String SERVER_BASE_REST_PKI_URL = "http://localhost:8080/rest/pki/";
+	private static final String CRL_URL = "/crl";
 	
 	public CertificateService() {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 	
+	//TODO PLEASE REFACTOR ME
 	public X509CertificateHolder generateCertificate(String subjectName, PublicKey subjectPublicKey, String issuerName, PrivateKey issuerPrivateKey) {
 		try {			
 			byte[] encodedPublicKey = subjectPublicKey.getEncoded();
@@ -57,7 +65,13 @@ public class CertificateService {
 			Date endDate = new Date(System.currentTimeMillis() + YEAR_IN_MILLI);
 
 			X509v3CertificateBuilder v3CertGen = new X509v3CertificateBuilder(issuer, BigInteger.ONE, startDate, endDate, subject, subjectPubKeyInfo);
-
+			
+			GeneralName CRLGeneralName = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String(SERVER_BASE_REST_PKI_URL + issuerName + CRL_URL));
+			GeneralNames CRLGeneralNames = new GeneralNames(CRLGeneralName);
+			DistributionPointName distributionPointName = new DistributionPointName(CRLGeneralNames);
+			
+			v3CertGen.addExtension(X509Extension.cRLDistributionPoints, false, distributionPointName);
+			
 			AsymmetricKeyParameter privateKeyParam = PrivateKeyFactory.createKey(issuerPrivateKey.getEncoded());
 
 			AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_HASH_ALG);
