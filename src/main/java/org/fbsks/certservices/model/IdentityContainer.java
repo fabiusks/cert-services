@@ -22,7 +22,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
  *
  */
 @Entity
-public class IdentityContainer extends AbstractPersistable<Long>{
+public class IdentityContainer extends AbstractPersistable<Long> {
 
 	private static final long serialVersionUID = -8463185953157204525L;
 
@@ -30,15 +30,43 @@ public class IdentityContainer extends AbstractPersistable<Long>{
 	protected byte[] certificate;
 
 	@Lob
+	protected byte[] rootCertificate;
+
+	@Lob
 	protected byte[] privateKey;
-	
+
 	protected static final String DEFAULT_KEY_ALG = "RSA";
-	
+
 	protected IdentityContainer() {}
-	
-	public IdentityContainer(X509CertificateHolder certificate, PrivateKey privateKey) {
+
+	/**
+	 * Constructor to be used when the identity generated is from the final user.
+	 * TODO This is a very poor design and limits certificate chains to have size 1. It needs to be re-make.
+	 * 
+	 * @param rootCertificate
+	 * @param certificate
+	 * @param privateKey
+	 */
+	public IdentityContainer(X509CertificateHolder rootCertificate, X509CertificateHolder certificate, PrivateKey privateKey) {
 		try {
 			this.certificate = certificate.getEncoded();
+			this.rootCertificate = rootCertificate.getEncoded();
+			this.privateKey = privateKey.getEncoded();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Error while creating certificate authority: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Constructor to be used when the identity generated is from a CA.
+	 *  
+	 * @param caCertificate
+	 * @param privateKey
+	 */
+	public IdentityContainer(X509CertificateHolder caCertificate, PrivateKey privateKey) {
+		try {
+			this.certificate = caCertificate.getEncoded();
 			this.privateKey = privateKey.getEncoded();
 
 		} catch (Exception e) {
@@ -74,21 +102,36 @@ public class IdentityContainer extends AbstractPersistable<Long>{
 	public void setPrivateKey(byte[] privateKey) {
 		this.privateKey = privateKey;
 	}
-	
+
 	public PublicKey getPublicKey() {
 		try {
 			SubjectPublicKeyInfo subjectPublicKeyInfo = getCertificate().getSubjectPublicKeyInfo();
 			RSAKeyParameters rsa = (RSAKeyParameters) PublicKeyFactory.createKey(subjectPublicKeyInfo);
-			
+
 			RSAPublicKeySpec rsaSpec = new RSAPublicKeySpec(rsa.getModulus(), rsa.getExponent());
-			
-			KeyFactory kf = KeyFactory.getInstance("RSA");
+
+			KeyFactory kf = KeyFactory.getInstance(DEFAULT_KEY_ALG);
 			PublicKey rsaPub = kf.generatePublic(rsaSpec);
-			
+
 			return rsaPub;
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException("Error while getting Public Key: " + e.getMessage(), e);
 		}
 	}
+
+	public X509CertificateHolder getRootCertificate() {
+		try {
+			return new X509CertificateHolder(rootCertificate);
+
+		} catch (IOException e) {
+			throw new RuntimeException("Error getting root certificate: " + e.getMessage(), e);
+		}
+	}
+
+	public void setRootCertificate(byte[] rootCertificate) {
+		this.rootCertificate = rootCertificate;
+	}
+
+
 }

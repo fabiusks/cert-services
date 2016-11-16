@@ -38,6 +38,12 @@ public class PKIController {
 	@Autowired
 	private PKCS12ConversorService p12Conversor;
 	
+	private static final String DEFAULT_PASSWORD = "123456";
+	private static final String P12_EXTENSTION = ".p12";
+	
+	private static final String CONTENT_DISPOSITION_HEADER = "content-disposition";
+	private static final String CONTENT_DISPOSITION_ARGS = "attachment; filename=";
+	
 	@RequestMapping(path = "/new", method = RequestMethod.POST)
 	public void generateNewPKI(@RequestParam String pkiName) {
 		pkiService.generatePKI(pkiName);
@@ -54,15 +60,13 @@ public class PKIController {
 	@RequestMapping(path="/cert/new", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> newPKICertificate(@RequestParam String pkiName, @RequestParam String subjectName) throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		IdentityContainer userIdentity = this.pkiService.generateIdentity(pkiName, subjectName);
-		
 		KeyStore userPKCS12 = p12Conversor.generatePKCS12(userIdentity);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		userPKCS12.store(output, "123456".toCharArray());
+		userPKCS12.store(output, DEFAULT_PASSWORD.toCharArray());
 		
-		//TODO Return the userIdentity (as PKCS#12)
 		return ResponseEntity.ok()
-				.header("content-disposition", "attachment; filename=" + userIdentity.getCertificate().getSubject() + ".p12")
+				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + userIdentity.getCertificate().getSubject().toString().replaceFirst("CN=",  "") + P12_EXTENSTION)
 				.body(Base64.encode(output.toByteArray()));
 	}
 }

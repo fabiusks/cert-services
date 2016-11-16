@@ -74,7 +74,7 @@ public class PKIService {
 		
 		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, userKeyPair.getPublic(), rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), retrievedPKI.getCas().get(0).getIdentityContainer().getPrivateKey());
 		
-		IdentityContainer identifyContainer = new IdentityContainer(finalUserCertificate, userKeyPair.getPrivate());
+		IdentityContainer identifyContainer = new IdentityContainer(rootCertificate, finalUserCertificate, userKeyPair.getPrivate());
 
 		return identifyContainer;
 	}

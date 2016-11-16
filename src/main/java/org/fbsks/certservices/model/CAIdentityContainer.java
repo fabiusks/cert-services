@@ -20,6 +20,7 @@ public class CAIdentityContainer extends IdentityContainer {
 	public CAIdentityContainer (X509CertificateHolder certificate, PrivateKey privateKey) {
 		super(certificate, privateKey);
 	}
+	
 	public CertificateAuthority getCertificateAuthority() {
 		return certificateAuthority;
 	}

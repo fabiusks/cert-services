@@ -22,19 +22,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class PKCS12ConversorService {
 
+	private static final String P12_EXTENSTION = "PKCS12";
+	private static final String X509_EXTENSTION = "X.509";
+	
 	public KeyStore generatePKCS12(IdentityContainer identity) {
 		try {
 			Security.addProvider(new BouncyCastleProvider());
 			
-			KeyStore keystore = KeyStore.getInstance("PKCS12", "BC");
+			KeyStore keystore = KeyStore.getInstance(P12_EXTENSTION, BouncyCastleProvider.PROVIDER_NAME);
 			keystore.load(null, null);
-			
-			String alias = identity.getCertificate().getSubject().toString();
+
+			String alias = identity.getCertificate().getSubject().toString().replaceFirst("CN=",  "");
 			PrivateKey privateKey = identity.getPrivateKey();
 			
-			X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(identity.getCertificate());
-			Certificate convertedCertificate = CertificateFactory.getInstance("X.509", "BC").generateCertificate(new ByteArrayInputStream(certificate.getEncoded()));
-			Certificate[] chain = {convertedCertificate};
+			CertificateFactory certificateFactory = CertificateFactory.getInstance(X509_EXTENSTION, BouncyCastleProvider.PROVIDER_NAME);
+
+			JcaX509CertificateConverter certificateConverter = new JcaX509CertificateConverter();
+			
+			X509Certificate certificate = certificateConverter.getCertificate(identity.getCertificate());
+			Certificate convertedUserCertificate = certificateFactory.generateCertificate(new ByteArrayInputStream(certificate.getEncoded()));
+			
+			X509Certificate rootCACertificate = certificateConverter.getCertificate(identity.getRootCertificate());
+			Certificate convertedRootCACertificate = certificateFactory.generateCertificate(new ByteArrayInputStream(rootCACertificate.getEncoded()));;
+			
+			Certificate[] chain = {convertedUserCertificate, convertedRootCACertificate};
 			
 			keystore.setKeyEntry(alias, privateKey, null, chain);
 			

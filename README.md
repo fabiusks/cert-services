@@ -1,5 +1,5 @@
 # cert-services
-(Project under development)
+(The project is under development and has many limitations, improvements and refactorings to be done. Feel free to contribute :))
 
 Spring Boot project that provides digital certificates and PKI services and utilities via REST and Web interface.
 Actually, it's main purposes are: 

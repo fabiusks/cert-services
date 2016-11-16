@@ -38,17 +38,21 @@ public class PKCS12ConversorServiceTest {
 	@Autowired
 	private PKIService pkiService;
 	
+	private static final String TEST_PKI_NAME = "testPKI";
+	private static final String TEST_CERTIFICATE_NAME = "testPKI";
+	private static final String DEFAULT_KEYSTORE_PASSWORD = "123456";
+	
 	@Test
-	public void shouldGeneratePKCS12() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, InvalidKeyException, CertificateException, NoSuchProviderException, SignatureException {
-		PKI pki = this.pkiService.generatePKI("test");
-		IdentityContainer identity = this.pkiService.generateIdentity("test", "testCertificate");
+	public void shouldGenerateFinalUserPKCS12() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, InvalidKeyException, CertificateException, NoSuchProviderException, SignatureException {
+		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
+		IdentityContainer identity = this.pkiService.generateIdentity(TEST_PKI_NAME, TEST_CERTIFICATE_NAME);
 		
 		KeyStore keyStore = this.p12Conversor.generatePKCS12(identity);
 		String certificateAlias = keyStore.aliases().nextElement();
 		Certificate certificate = keyStore.getCertificate(certificateAlias);
 		
 		assertTrue(certificate != null);
-		assertTrue(keyStore.getKey(certificateAlias, "123456".toCharArray()) != null);
+		assertTrue(keyStore.getKey(certificateAlias, DEFAULT_KEYSTORE_PASSWORD.toCharArray()) != null);
 
 		certificate.verify(pki.getCas().get(0).getIdentityContainer().getPublicKey());
 	}
