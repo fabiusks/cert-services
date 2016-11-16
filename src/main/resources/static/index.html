@@ -1,70 +1,75 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Certificate Services</title>
-</head>
-<body>
-	<h1>Certificate Services Framework</h1>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Certificate Services</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	</head>
 	
-	<div>
-	<h2>Self Signed Certificate Generation</h2>
-	<form name="certGenForm" action="http://localhost:8080/rest/cert/new/self-signed" method="POST">		
-		<label>Enter the subject name:</label>
-		<input type="text" id="subjectField" name="subject" placeholder="Subject">
-		<p></p>
-		
-		<button type="submit">Generate</button>
-	</form>
-	</div>
+	<body>
+		<div class="container">
+			<h1 style="text-align: center;">Certificate Services Framework</h1>
+			
+			<div class="jumbotron">
+				<h2>PKI Generation</h2>
+				<form name="pkiGenForm" action="http://localhost:8080/rest/pki/new" method="POST">
+					<label>Enter the issuer name:</label>
+					<input type="text" id="pkiName" name="pkiName" placeholder="PKI Name">
+					<p></p>
+					
+					<button type="submit" class="btn btn-primary">Generate</button>
+				</form>
+			</div>
+			
+			<div class="jumbotron">
+				<h2>PKI List</h2>
+					<div id="pkiList"></div>
+			</div>
+			
+			<div class="jumbotron">
+				<h2>PKI Certificate Generation</h2>
+				<form name="certGenForm" action="http://localhost:8080/rest/pki/cert/new" method="POST">
+					<label>Enter the PKI name:</label>
+					<input type="text" id="pkiName" name="pkiName" placeholder="PKI Name">
+					<p></p>
+					
+					<label>Enter the subject name:</label>
+					<input type="text" id="subjectField" name="subjectName" placeholder="Subject Name">
+					<p></p>
+					
+					<button type="submit" class="btn btn-primary">Generate</button>
+				</form>
+			</div>
+			
+			<div class="jumbotron">
+				<h2>Self Signed Certificate Generation</h2>
+				<form name="certGenForm" action="http://localhost:8080/rest/cert/new/self-signed" method="POST">		
+					<label>Enter the subject name:</label>
+					<input type="text" id="subjectField" name="subject" placeholder="Subject Name">
+					<p></p>
+				
+					<button type="submit" class="btn btn-primary">Generate</button>
+				</form>
+			</div>
+			
+			<div class="jumbotron">
+				<h2>Certificate Generation</h2>
+				<form name="certGenForm" action="http://localhost:8080/rest/cert/new" method="POST">
+					<label>Enter the issuer name:</label>
+					<input type="text" id="issuerField" name="issuer" placeholder="Issuer Name">
+					<p></p>
+					
+					<label>Enter the subject name:</label>
+					<input type="text" id="subjectField" name="subject" placeholder="Subject Name">
+					<p></p>
+					
+					<button type="submit" class="btn btn-primary">Generate</button>
+				</form>
+			</div>
+		</div>
+	</body>
 	
-	<div>
-	<h2>Certificate Generation</h2>
-	<form name="certGenForm" action="http://localhost:8080/rest/cert/new" method="POST">
-		<label>Enter the issuer name:</label>
-		<input type="text" id="issuerField" name="issuer" placeholder="Issuer">
-		<p></p>
-		
-		<label>Enter the subject name:</label>
-		<input type="text" id="subjectField" name="subject" placeholder="Subject">
-		<p></p>
-		
-		<button type="submit">Generate</button>
-	</form>
-	</div>
+	<script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
 	
-	<div>
-	<h2>PKI Generation</h2>
-	<form name="pkiGenForm" action="http://localhost:8080/rest/pki/new" method="POST">
-		<label>Enter the issuer name:</label>
-		<input type="text" id="pkiName" name="pkiName" placeholder="PKI Name">
-		<p></p>
-		
-		<button type="submit">Generate</button>
-	</form>
-	</div>
-	
-	<div>
-	<h2>PKI List</h2>
-		<div id="pkiList"></div>
-	</div>
-	
-	<div>
-	<h2>PKI Certificate Generation</h2>
-	<form name="certGenForm" action="http://localhost:8080/rest/pki/cert/new" method="POST">
-		<label>Enter the PKI name:</label>
-		<input type="text" id="pkiName" name="pkiName" placeholder="PKI Name">
-		<p></p>
-		
-		<label>Enter the subject name:</label>
-		<input type="text" id="subjectField" name="subjectName" placeholder="Subject">
-		<p></p>
-		
-		<button type="submit">Generate</button>
-	</form>
-	</div>
-</body>
-
-<script type="text/javascript" src="js/jquery-3.1.1.js"></script>
-<script type="text/javascript" src="js/app.js"></script>
 </html>

@@ -10,10 +10,19 @@ $(document).ready(function() {
 function fillPKITable(data) {
 	var table = document.createElement("table");
 	
-	for(var i = 0; i < data.length; i++) {
+	if(data.length > 0) {
+		for(var i = 0; i < data.length; i++) {
+			var tr = document.createElement("tr");
+			var td = document.createElement("td");
+			td.innerHTML = data[i].name;
+			tr.appendChild(td);
+			table.appendChild(tr);
+		}
+	} else {
 		var tr = document.createElement("tr");
 		var td = document.createElement("td");
-		td.innerHTML = data[i].name;
+		
+		td.innerHTML = "No PKIs currently generated.";
 		tr.appendChild(td);
 		table.appendChild(tr);
 	}
