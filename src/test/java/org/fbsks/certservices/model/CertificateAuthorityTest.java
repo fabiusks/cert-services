@@ -3,6 +3,7 @@ package org.fbsks.certservices.model;
 import java.security.KeyPair;
 
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.fbsks.certservices.services.CertificateKeyPairGeneratorService;
 import org.fbsks.certservices.services.CertificateService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,14 +21,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class CertificateAuthorityTest {
 
 	@Autowired
-	private CertificateKeyPairGenerator keyPairGenerator;
+	private CertificateKeyPairGeneratorService keyPairGenerator;
 	
 	@Autowired
 	private CertificateService certificateService;
 	
 	@Test
 	public void shouldGenerateCA() {
-		this.keyPairGenerator = new CertificateKeyPairGenerator();
+		this.keyPairGenerator = new CertificateKeyPairGeneratorService();
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		
 		X509CertificateHolder certificate = certificateService.generateCertificate("TestSubject", keyPair.getPublic(), "testIssuer", keyPair.getPrivate());

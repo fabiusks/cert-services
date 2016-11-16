@@ -3,14 +3,24 @@ package org.fbsks.certservices.model;
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
+import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+/**
+ * 
+ * @author fabio.resner
+ *
+ */
 @Entity
 public class IdentityContainer extends AbstractPersistable<Long>{
 
@@ -63,5 +73,22 @@ public class IdentityContainer extends AbstractPersistable<Long>{
 
 	public void setPrivateKey(byte[] privateKey) {
 		this.privateKey = privateKey;
+	}
+	
+	public PublicKey getPublicKey() {
+		try {
+			SubjectPublicKeyInfo subjectPublicKeyInfo = getCertificate().getSubjectPublicKeyInfo();
+			RSAKeyParameters rsa = (RSAKeyParameters) PublicKeyFactory.createKey(subjectPublicKeyInfo);
+			
+			RSAPublicKeySpec rsaSpec = new RSAPublicKeySpec(rsa.getModulus(), rsa.getExponent());
+			
+			KeyFactory kf = KeyFactory.getInstance("RSA");
+			PublicKey rsaPub = kf.generatePublic(rsaSpec);
+			
+			return rsaPub;
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting Public Key: " + e.getMessage(), e);
+		}
 	}
 }

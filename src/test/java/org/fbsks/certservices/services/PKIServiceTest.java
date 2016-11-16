@@ -59,7 +59,6 @@ public class PKIServiceTest {
 	}
 	
 	@Test
-	//TODO Fix IT accordingly to new parameters
 	public void shouldGenerateFinalUserCertificateOnExistingCA() {
 		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
 		
@@ -70,6 +69,5 @@ public class PKIServiceTest {
 		IdentityContainer finalUserCertificate = this.pkiService.generateIdentity(retrievedPKI.getName(), TEST_FINAL_USER_CERT_NAME);
 		
 		assertEquals(finalUserCertificate.getCertificate().getIssuer(), pki.getCas().get(0).getIdentityContainer().getCertificate().getSubject());
-		
 	}
 }

@@ -18,7 +18,6 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.fbsks.certservices.model.CertificateKeyPairGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,11 +46,11 @@ public class CertificateServiceTest {
 	}
 
 	@Test
-	//TODO The return of those services need to be the user PKCS12, with the certificate and private key
-	public void shouldGenerateSelfSignedCertificate() throws IOException {
-		CertificateKeyPairGenerator keyPairGenerator = new CertificateKeyPairGenerator();
+	public void shouldGenerateSelfSignedCertificate() throws IOException, InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
+		CertificateKeyPairGeneratorService keyPairGenerator = new CertificateKeyPairGeneratorService();
 		
-		X509CertificateHolder certHolder = this.certificateGenerator.generateSelfSignedCertificate(SUBJECT_NAME, keyPairGenerator.generateKeyPair());
+		KeyPair keyPair = keyPairGenerator.generateKeyPair();
+		X509CertificateHolder certHolder = this.certificateGenerator.generateSelfSignedCertificate(SUBJECT_NAME, keyPair);
 
 		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_SUBJECT_NAME));
 		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
@@ -61,13 +60,14 @@ public class CertificateServiceTest {
 		 * On a self signed certificate, issuer and subject names must be the same
 		 */
 		assertEquals(certHolder.getIssuer(), certHolder.getSubject());
+		
+		X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(certHolder);
+		certificate.verify(keyPair.getPublic());
 	}
 	
 	@Test
-	//TODO The return of those services need to be the user PKCS12, with the certificate and private key
-	//TODO Start changings from HERE
 	public void shouldGenerateCertificate() throws CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
-		CertificateKeyPairGenerator keyPairGenerator = new CertificateKeyPairGenerator();
+		CertificateKeyPairGeneratorService keyPairGenerator = new CertificateKeyPairGeneratorService();
 		
 		KeyPair issuerKeyPair = keyPairGenerator.generateKeyPair();
 		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();

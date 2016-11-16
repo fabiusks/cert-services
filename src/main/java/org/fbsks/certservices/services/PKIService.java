@@ -9,7 +9,6 @@ import org.fbsks.certservices.Repository.CertificateAuthorityRepository;
 import org.fbsks.certservices.Repository.PKIRepository;
 import org.fbsks.certservices.model.CAIdentityContainer;
 import org.fbsks.certservices.model.CertificateAuthority;
-import org.fbsks.certservices.model.CertificateKeyPairGenerator;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class PKIService {
 	private CertificateService certificateService;
 	
 	@Autowired
-	private CertificateKeyPairGenerator keyPairGenerator;
+	private CertificateKeyPairGeneratorService keyPairGenerator;
 	
 	@Autowired
 	private PKIRepository pkiRepository;
@@ -76,7 +75,7 @@ public class PKIService {
 		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, userKeyPair.getPublic(), rootCertificate.getSubject().toString().replaceFirst("CN=",  ""), retrievedPKI.getCas().get(0).getIdentityContainer().getPrivateKey());
 		
 		IdentityContainer identifyContainer = new IdentityContainer(finalUserCertificate, userKeyPair.getPrivate());
-		//TODO Return identity as PKCS#12
+
 		return identifyContainer;
 	}
 }

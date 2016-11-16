@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.util.encoders.Base64;
-import org.fbsks.certservices.model.CertificateKeyPairGenerator;
+import org.fbsks.certservices.services.CertificateKeyPairGeneratorService;
 import org.fbsks.certservices.services.CertificateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class CertificatesController {
 	private CertificateService certService;
 	
 	@Autowired
-	private CertificateKeyPairGenerator keyPairGenerator;
+	private CertificateKeyPairGeneratorService keyPairGenerator;
 	
 	//TODO Review exception thrown at this point
 	//TODO Response Entity returning could be revised (could be done better)

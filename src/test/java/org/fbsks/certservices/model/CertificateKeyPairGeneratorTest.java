@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.security.KeyPair;
 
+import org.fbsks.certservices.services.CertificateKeyPairGeneratorService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class CertificateKeyPairGeneratorTest {
 
 	@Autowired
-	private CertificateKeyPairGenerator keyGenerator;
+	private CertificateKeyPairGeneratorService keyGenerator;
 
 	/*
 	 * Lower key-size for faster test execution

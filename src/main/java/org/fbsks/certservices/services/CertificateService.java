@@ -46,7 +46,7 @@ public class CertificateService {
 	}
 	
 	public X509CertificateHolder generateCertificate(String subjectName, PublicKey subjectPublicKey, String issuerName, PrivateKey issuerPrivateKey) {
-		try {
+		try {			
 			byte[] encodedPublicKey = subjectPublicKey.getEncoded();
 			SubjectPublicKeyInfo subjectPubKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(encodedPublicKey));
 

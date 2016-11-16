@@ -1,18 +1,18 @@
-package org.fbsks.certservices.model;
+package org.fbsks.certservices.services;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author fabio.resner
  *
  */
-@Component
-public class CertificateKeyPairGenerator {
+@Service
+public class CertificateKeyPairGeneratorService {
 
 	private static final String KEYS_ALG = "RSA";
 	private static final String BC_PROV = "BC";
