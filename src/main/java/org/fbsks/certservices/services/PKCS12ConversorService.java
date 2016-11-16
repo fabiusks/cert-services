@@ -1,13 +1,12 @@
 package org.fbsks.certservices.services;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.cert.Certificate;
 
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -38,9 +37,6 @@ public class PKCS12ConversorService {
 			Certificate[] chain = {convertedCertificate};
 			
 			keystore.setKeyEntry(alias, privateKey, null, chain);
-			
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			keystore.store(output, "123456".toCharArray());
 			
 			return keystore;
 			

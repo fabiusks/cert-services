@@ -1,12 +1,18 @@
 package org.fbsks.certservices.controller.rest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.List;
 
 import org.bouncycastle.util.encoders.Base64;
 import org.fbsks.certservices.controller.rest.jsonview.PKISummary;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
+import org.fbsks.certservices.services.PKCS12ConversorService;
 import org.fbsks.certservices.services.PKIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+/**
+ * 
+ * @author fabio.resner
+ *
+ */
 @RestController
 @RequestMapping("/rest/pki")
 public class PKIController {
 
 	@Autowired
 	private PKIService pkiService;
+	
+	@Autowired
+	private PKCS12ConversorService p12Conversor;
 	
 	@RequestMapping(path = "/new", method = RequestMethod.POST)
 	public void generateNewPKI(@RequestParam String pkiName) {
@@ -38,12 +52,17 @@ public class PKIController {
 	//TODO Review exception thrown at this point
 	//TODO Response Entity returning could be revised (could be done better)
 	@RequestMapping(path="/cert/new", method = RequestMethod.POST)
-	public ResponseEntity<byte[]> newPKICertificate(@RequestParam String pkiName, @RequestParam String subjectName) throws IOException {
+	public ResponseEntity<byte[]> newPKICertificate(@RequestParam String pkiName, @RequestParam String subjectName) throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		IdentityContainer userIdentity = this.pkiService.generateIdentity(pkiName, subjectName);
+		
+		KeyStore userPKCS12 = p12Conversor.generatePKCS12(userIdentity);
+		
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		userPKCS12.store(output, "123456".toCharArray());
 		
 		//TODO Return the userIdentity (as PKCS#12)
 		return ResponseEntity.ok()
-				.header("content-disposition", "attachment; filename=" + userIdentity.getCertificate().getSubject() + ".cer")
-				.body(Base64.encode(userIdentity.getCertificate().getEncoded()));
+				.header("content-disposition", "attachment; filename=" + userIdentity.getCertificate().getSubject() + ".p12")
+				.body(Base64.encode(output.toByteArray()));
 	}
 }
