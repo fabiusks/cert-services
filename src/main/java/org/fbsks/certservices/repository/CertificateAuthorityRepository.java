@@ -1,4 +1,4 @@
-package org.fbsks.certservices.Repository;
+package org.fbsks.certservices.repository;
 
 import org.fbsks.certservices.model.CertificateAuthority;
 import org.springframework.data.jpa.repository.JpaRepository;

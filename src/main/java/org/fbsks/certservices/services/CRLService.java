@@ -13,8 +13,8 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V2CRLGenerator;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
-import org.fbsks.certservices.Repository.CertificateAuthorityRepository;
 import org.fbsks.certservices.model.CertificateAuthority;
+import org.fbsks.certservices.repository.CertificateAuthorityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

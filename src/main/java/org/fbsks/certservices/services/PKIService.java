@@ -4,13 +4,13 @@ import java.security.KeyPair;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.fbsks.certservices.Repository.CAIdentityContainerRepository;
-import org.fbsks.certservices.Repository.CertificateAuthorityRepository;
-import org.fbsks.certservices.Repository.PKIRepository;
 import org.fbsks.certservices.model.CAIdentityContainer;
 import org.fbsks.certservices.model.CertificateAuthority;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
+import org.fbsks.certservices.repository.CAIdentityContainerRepository;
+import org.fbsks.certservices.repository.CertificateAuthorityRepository;
+import org.fbsks.certservices.repository.PKIRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

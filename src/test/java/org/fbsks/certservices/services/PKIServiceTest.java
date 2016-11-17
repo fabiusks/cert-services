@@ -5,9 +5,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.fbsks.certservices.Repository.PKIRepository;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
+import org.fbsks.certservices.repository.PKIRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
