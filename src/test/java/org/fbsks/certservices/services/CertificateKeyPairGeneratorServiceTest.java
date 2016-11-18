@@ -1,24 +1,19 @@
 package org.fbsks.certservices.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
 
-import org.fbsks.certservices.services.CertificateKeyPairGeneratorService;
+import org.fbsks.certservices.BaseTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * 
  * @author fabio.resner
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class CertificateKeyPairGeneratorServiceTest {
+public class CertificateKeyPairGeneratorServiceTest extends BaseTest {
 
 	@Autowired
 	private CertificateKeyPairGeneratorService keyGenerator;

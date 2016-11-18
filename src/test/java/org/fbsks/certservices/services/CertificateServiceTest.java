@@ -18,18 +18,16 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.fbsks.certservices.BaseTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * 
  * @author fabio.resner
  *
  */
-@RunWith(SpringRunner.class)
-public class CertificateServiceTest {
+public class CertificateServiceTest extends BaseTest {
 	
 	private CertificateService certificateGenerator;
 	

@@ -1,19 +1,21 @@
 package org.fbsks.certservices.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.security.cert.X509CRL;
 
+import org.fbsks.certservices.BaseTest;
 import org.fbsks.certservices.model.PKI;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class CRLServiceTest {
+/**
+ * 
+ * @author fabio.resner
+ *
+ */
+public class CRLServiceTest extends BaseTest {
 
 	private static final String NONEXISTING_CA_NAME = "NO_WAY_THIS_CA_NAME_EXISTS";
 	private static final String TEST_PKI_NAME = "testPKI";

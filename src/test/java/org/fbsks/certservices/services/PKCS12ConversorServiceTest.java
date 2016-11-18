@@ -12,25 +12,18 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
-import javax.transaction.Transactional;
-
+import org.fbsks.certservices.BaseTest;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * 
  * @author fabio.resner
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Transactional
-public class PKCS12ConversorServiceTest {
+public class PKCS12ConversorServiceTest extends BaseTest {
 
 	@Autowired
 	private PKCS12ConversorService p12Conversor;

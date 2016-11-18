@@ -6,25 +6,19 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.fbsks.certservices.BaseTest;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
 import org.fbsks.certservices.repository.PKIRepository;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
  * @author fabio.resner
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Transactional
-public class PKIServiceTest {
+public class PKIServiceTest extends BaseTest {
 
 	@Autowired
 	private PKIService pkiService;
