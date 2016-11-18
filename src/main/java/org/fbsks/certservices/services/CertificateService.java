@@ -50,7 +50,7 @@ public class CertificateService {
 	private static final String CN_FORMAT = "CN=";
 	private static final String SERVER_BASE_REST_PKI_URL = "http://localhost:8080/rest/pki/";
 	private static final String CRL_URL = "/crl";
-	private static final String AIA_URL = "/aia";
+	private static final String AIA_URL = "/cert";
 
 	public CertificateService() {
 		Security.addProvider(new BouncyCastleProvider());
