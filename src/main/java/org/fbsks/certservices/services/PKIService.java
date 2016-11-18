@@ -78,4 +78,15 @@ public class PKIService {
 
 		return identifyContainer;
 	}
+
+	public X509CertificateHolder getCertificateChain(String subjectName) {
+		CertificateAuthority ca = this.caRepository.findOneByName(subjectName + ROOT_CA);
+		
+		if(ca == null) {
+			throw new RuntimeException("Unable to find Certificate Authority with name: " + subjectName);
+		}
+		
+		return ca.getIdentityContainer().getCertificate();
+		
+	}
 }

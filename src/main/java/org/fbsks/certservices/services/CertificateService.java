@@ -7,9 +7,12 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.util.Date;
 
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
@@ -40,18 +43,19 @@ public class CertificateService {
 	public static final Logger LOGGER = LoggerFactory.getLogger(CertificateService.class);
 
 	private static final String SIG_HASH_ALG = "SHA256withRSA";
-	
+
 	private static final int YEAR_IN_MILLI = 365 * 24 * 60 * 60 * 1000;
 	private static final int DAY_IN_MILLI = 24 * 60 * 60 * 1000;
-	
+
 	private static final String CN_FORMAT = "CN=";
 	private static final String SERVER_BASE_REST_PKI_URL = "http://localhost:8080/rest/pki/";
 	private static final String CRL_URL = "/crl";
-	
+	private static final String AIA_URL = "/aia";
+
 	public CertificateService() {
 		Security.addProvider(new BouncyCastleProvider());
 	}
-	
+
 	//TODO PLEASE REFACTOR ME
 	public X509CertificateHolder generateCertificate(String subjectName, PublicKey subjectPublicKey, String issuerName, PrivateKey issuerPrivateKey) {
 		try {			
@@ -65,13 +69,21 @@ public class CertificateService {
 			Date endDate = new Date(System.currentTimeMillis() + YEAR_IN_MILLI);
 
 			X509v3CertificateBuilder v3CertGen = new X509v3CertificateBuilder(issuer, BigInteger.ONE, startDate, endDate, subject, subjectPubKeyInfo);
-			
+
 			GeneralName CRLGeneralName = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String(SERVER_BASE_REST_PKI_URL + issuerName + CRL_URL));
 			GeneralNames CRLGeneralNames = new GeneralNames(CRLGeneralName);
 			DistributionPointName distributionPointName = new DistributionPointName(CRLGeneralNames);
-			
+
 			v3CertGen.addExtension(X509Extension.cRLDistributionPoints, false, distributionPointName);
-			
+
+			//Authority Information Access
+			AccessDescription caIssuers = new AccessDescription(AccessDescription.id_ad_caIssuers, new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String(SERVER_BASE_REST_PKI_URL + issuerName + AIA_URL)));
+
+			ASN1EncodableVector aia_ASN = new ASN1EncodableVector();
+			aia_ASN.add(caIssuers);
+
+			v3CertGen.addExtension(X509Extension.authorityInfoAccess, false, new DERSequence(aia_ASN));
+
 			AsymmetricKeyParameter privateKeyParam = PrivateKeyFactory.createKey(issuerPrivateKey.getEncoded());
 
 			AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_HASH_ALG);

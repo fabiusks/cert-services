@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
 import org.fbsks.certservices.repository.PKIRepository;
@@ -33,11 +34,11 @@ public class PKIServiceTest {
 	
 	private static final String TEST_PKI_NAME = "TESTPKI";
 	private static final String TEST_FINAL_USER_CERT_NAME = "TestFinalUser";
+	private static final String NON_EXISITING_CA_NAME = "Hi im a ca and I don't exist";
 	
 	@Test
 	public void shouldGeneratePKIOnlyWithRootCA() {
 		this.pkiService.generatePKI(TEST_PKI_NAME);
-		
 		PKI pki = pkiRepository.findOneByName(TEST_PKI_NAME);
 		
 		assertEquals(TEST_PKI_NAME, pki.getName());
@@ -62,12 +63,23 @@ public class PKIServiceTest {
 	public void shouldGenerateFinalUserCertificateOnExistingCA() {
 		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
 		
-		this.pkiRepository.save(pki);
-		
-		PKI retrievedPKI = pkiRepository.findOneByName(TEST_PKI_NAME);
-		
-		IdentityContainer finalUserCertificate = this.pkiService.generateIdentity(retrievedPKI.getName(), TEST_FINAL_USER_CERT_NAME);
+		IdentityContainer finalUserCertificate = this.pkiService.generateIdentity(pki.getName(), TEST_FINAL_USER_CERT_NAME);
 		
 		assertEquals(finalUserCertificate.getCertificate().getIssuer(), pki.getCas().get(0).getIdentityContainer().getCertificate().getSubject());
+	}
+	
+	@Test
+	public void shouldGetCACertificate() {
+		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
+		
+		X509CertificateHolder caCert = this.pkiService.getCertificateChain(TEST_PKI_NAME);
+		X509CertificateHolder retrievedCaCert = pki.getCas().get(0).getIdentityContainer().getCertificate();
+		
+		assertEquals(caCert, retrievedCaCert);
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void shouldFailtGetCACertificate() {
+		this.pkiService.getCertificateChain(NON_EXISITING_CA_NAME);
 	}
 }
