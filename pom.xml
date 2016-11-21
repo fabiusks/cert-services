@@ -51,6 +51,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-remote-shell</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -64,7 +69,6 @@
 			<artifactId>bcmail-jdk16</artifactId>
 			<version>1.46</version>
 		</dependency>
-		
 	</dependencies>
 
 	<build>

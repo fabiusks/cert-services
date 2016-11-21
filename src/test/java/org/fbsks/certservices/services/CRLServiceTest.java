@@ -20,6 +20,8 @@ public class CRLServiceTest extends BaseTest {
 	private static final String NONEXISTING_CA_NAME = "NO_WAY_THIS_CA_NAME_EXISTS";
 	private static final String TEST_PKI_NAME = "testPKI";
 	
+	private static final String TEST_PKI_CN = "CN=testPKIROOTCA";
+	
 	@Autowired
 	private CRLService crlService;
 	
@@ -32,7 +34,7 @@ public class CRLServiceTest extends BaseTest {
 		X509CRL crl = this.crlService.generateCRL(pki.getCas().get(0).getName());
 		
 		assertNotNull(crl);
-		assertEquals(pki.getCas().get(0).getIdentityContainer().getCertificate().getSubject().toString(), crl.getIssuerX500Principal().getName());
+		assertEquals(TEST_PKI_CN, crl.getIssuerX500Principal().getName());
 	}
 	
 	@Test(expected=RuntimeException.class)

@@ -2,6 +2,7 @@ package org.fbsks.certservices.services;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -32,10 +33,10 @@ public class CertificateServiceTest extends BaseTest {
 	private CertificateService certificateGenerator;
 	
 	private static final String SUBJECT_NAME = "TestSubject";
-	private static final String FINAL_SUBJECT_NAME = "CN=TestSubject";
+	private static final String FINAL_SUBJECT_NAME = "CN=TestSubject,OU=CertServices,C=City,L=Country,O=Organization,E=email@certservices.org";
 	
 	private static final String ISSUER_NAME = "TestIssuer";
-	private static final String FINAL_ISSUER_NAME = "CN=TestIssuer";
+	private static final String FINAL_ISSUER_NAME = "CN=TestIssuer,OU=CertServices,C=City,L=Country,O=Organization,E=email@certservices.org";
 
 	@Before
 	public void setUp() throws OperatorCreationException, NoSuchAlgorithmException, IOException, NoSuchProviderException {
@@ -50,8 +51,8 @@ public class CertificateServiceTest extends BaseTest {
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		X509CertificateHolder certHolder = this.certificateGenerator.generateSelfSignedCertificate(SUBJECT_NAME, keyPair);
 
-		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_SUBJECT_NAME));
-		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
+		assertEquals(new X500Name(FINAL_SUBJECT_NAME), certHolder.getSubject());
+		assertEquals(new X500Name(FINAL_SUBJECT_NAME), certHolder.getIssuer());
 		assertEquals(certHolder.isValidOn(new Date()), true);
 		
 		/*
@@ -64,7 +65,7 @@ public class CertificateServiceTest extends BaseTest {
 	}
 	
 	@Test
-	public void shouldGenerateCertificate() throws CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
+	public void shouldGenerateCertificate() throws CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, IOException {
 		CertificateKeyPairGeneratorService keyPairGenerator = new CertificateKeyPairGeneratorService();
 		
 		KeyPair issuerKeyPair = keyPairGenerator.generateKeyPair();
@@ -72,12 +73,19 @@ public class CertificateServiceTest extends BaseTest {
 		
 		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, userKeyPair.getPublic(), ISSUER_NAME, issuerKeyPair.getPrivate());
 
-		assertEquals(certHolder.getIssuer(), new X500Name(FINAL_ISSUER_NAME));
-		assertEquals(certHolder.getSubject(), new X500Name(FINAL_SUBJECT_NAME));
-		assertEquals(certHolder.isValidOn(new Date()), true);
+		assertEquals(new X500Name(FINAL_ISSUER_NAME), certHolder.getIssuer());
+		assertEquals(new X500Name(FINAL_SUBJECT_NAME), certHolder.getSubject());
+		assertEquals(true, certHolder.isValidOn(new Date()));
 		
 		X509Certificate certificate = new JcaX509CertificateConverter().getCertificate(certHolder);
 		certificate.verify(issuerKeyPair.getPublic());
+		
+		/*
+		 * Saving for verification of the fields of the certificate. Should be done programatically in the future
+		 */
+		FileOutputStream fileOut = new FileOutputStream("target" + System.getProperty("file.separator") + "test.cer");
+		fileOut.write(certHolder.getEncoded());
+		fileOut.close();
 	}
 	
 	@Test

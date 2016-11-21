@@ -59,7 +59,7 @@ public class PKIServiceTest extends BaseTest {
 		
 		IdentityContainer finalUserCertificate = this.pkiService.generateIdentity(pki.getName(), TEST_FINAL_USER_CERT_NAME);
 		
-		assertEquals(finalUserCertificate.getCertificate().getIssuer(), pki.getCas().get(0).getIdentityContainer().getCertificate().getSubject());
+		assertEquals(pki.getCas().get(0).getIdentityContainer().getCertificate().getSubject(), finalUserCertificate.getCertificate().getIssuer());
 	}
 	
 	@Test
