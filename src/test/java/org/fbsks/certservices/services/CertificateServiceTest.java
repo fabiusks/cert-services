@@ -71,7 +71,7 @@ public class CertificateServiceTest extends BaseTest {
 		KeyPair issuerKeyPair = keyPairGenerator.generateKeyPair();
 		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
 		
-		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, userKeyPair.getPublic(), ISSUER_NAME, issuerKeyPair.getPrivate());
+		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, userKeyPair.getPublic(), ISSUER_NAME, issuerKeyPair);
 
 		assertEquals(new X500Name(FINAL_ISSUER_NAME), certHolder.getIssuer());
 		assertEquals(new X500Name(FINAL_SUBJECT_NAME), certHolder.getSubject());

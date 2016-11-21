@@ -67,16 +67,18 @@ public class CertificateService {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	public X509CertificateHolder generateCertificate(String subjectName, PublicKey subjectPublicKey, String issuerName, PrivateKey issuerPrivateKey) {
+	public X509CertificateHolder generateCertificate(String subjectName, PublicKey subjectPublicKey, String issuerName, KeyPair issuerKeyPair) {
 		try {			
 			SubjectPublicKeyInfo subjectPubKeyInfo = generatePublicKeyInfo(subjectPublicKey);
+			SubjectPublicKeyInfo issuerPubKeyInfo = generatePublicKeyInfo(issuerKeyPair.getPublic());
+			
 			X509v3CertificateBuilder v3CertGen = initializeCertificateBuilder(subjectPubKeyInfo, subjectName, issuerName);
 
 			addCRLSitributionPoints(issuerName, v3CertGen);
-			addKeyIdentifiers(subjectPubKeyInfo, v3CertGen);
+			addKeyIdentifiers(subjectPubKeyInfo, issuerPubKeyInfo, v3CertGen);
 			addAuthorityInformationAccess(issuerName, v3CertGen);
 
-			ContentSigner sigGen = generateContentSignerBuilder(issuerPrivateKey);
+			ContentSigner sigGen = generateContentSignerBuilder(issuerKeyPair.getPrivate());
 			X509CertificateHolder certHolder = v3CertGen.build(sigGen);
 
 			return certHolder;
@@ -88,7 +90,7 @@ public class CertificateService {
 	}
 	
 	public X509CertificateHolder generateSelfSignedCertificate(String subjectName, KeyPair keyPair) {
-		return this.generateCertificate(subjectName, keyPair.getPublic(), subjectName, keyPair.getPrivate());
+		return this.generateCertificate(subjectName, keyPair.getPublic(), subjectName, keyPair);
 	}
 
 	private ContentSigner generateContentSignerBuilder(PrivateKey issuerPrivateKey) throws OperatorCreationException, IOException {
@@ -109,14 +111,14 @@ public class CertificateService {
 		v3CertGen.addExtension(Extension.authorityInfoAccess, false, new DERSequence(aia_ASN));
 	}
 
-	private void addKeyIdentifiers(SubjectPublicKeyInfo subjectPubKeyInfo, X509v3CertificateBuilder v3CertGen) throws OperatorCreationException, CertIOException {
+	private void addKeyIdentifiers(SubjectPublicKeyInfo subjectPubKeyInfo, SubjectPublicKeyInfo issuerPubKeyInfo, X509v3CertificateBuilder v3CertGen) throws OperatorCreationException, CertIOException {
 		DigestCalculator digCalc = new BcDigestCalculatorProvider().get(new AlgorithmIdentifier(OIWObjectIdentifiers.idSHA1));
 		X509ExtensionUtils x509ExtensionUtils = new X509ExtensionUtils(digCalc);
 	
 		v3CertGen.addExtension(Extension.subjectKeyIdentifier, false, x509ExtensionUtils.createSubjectKeyIdentifier(subjectPubKeyInfo));
 		
 		//TODO Generating certificate with invalid signature when inserting this field (verify)
-//		v3CertGen.addExtension(Extension.authorityKeyIdentifier, false, x509ExtensionUtils.createAuthorityKeyIdentifier(subjectPubKeyInfo));
+		v3CertGen.addExtension(Extension.authorityKeyIdentifier, false, x509ExtensionUtils.createAuthorityKeyIdentifier(issuerPubKeyInfo));
 	}
 
 	private void addCRLSitributionPoints(String issuerName, X509v3CertificateBuilder v3CertGen) throws CertIOException {

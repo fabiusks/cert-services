@@ -69,10 +69,12 @@ public class PKIService {
 			throw new RuntimeException("Unable to find PKI with name: " + pkiName);
 		}
 		
-		X509CertificateHolder rootCertificate = retrievedPKI.getCas().get(0).getIdentityContainer().getCertificate();
-		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
+		CertificateAuthority rootCA = retrievedPKI.getCas().get(0);
 		
-		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, userKeyPair.getPublic(), retrievedPKI.getCas().get(0).getName(), retrievedPKI.getCas().get(0).getIdentityContainer().getPrivateKey());
+		X509CertificateHolder rootCertificate = rootCA.getIdentityContainer().getCertificate();
+		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
+		KeyPair issuerKeyPair = new KeyPair(rootCA.getIdentityContainer().getPublicKey(), rootCA.getIdentityContainer().getPrivateKey());
+		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, userKeyPair.getPublic(), rootCA.getName(), issuerKeyPair);
 		
 		IdentityContainer identifyContainer = new IdentityContainer(rootCertificate, finalUserCertificate, userKeyPair.getPrivate());
 
