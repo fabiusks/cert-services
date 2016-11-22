@@ -1,6 +1,8 @@
 # Cert-services
 
-(The project is under development and has many limitations, and many improvements and refactoring to be done. Feel free to contribute :))
+[![Build Status](https://travis-ci.org/fabiusks/cert-services.svg?branch=master)](https://travis-ci.org/fabiusks/cert-services)
+
+(The project is under development and has many limitations. Many improvements and refactoring needing to be done. Feel free to contribute :))
 
 Spring Boot project that provides digital certificates and PKI services and utilities via REST and Web interface.
 Actually, it's main purposes are: 
