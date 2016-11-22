@@ -91,8 +91,11 @@ public class PKIController {
 	public ResponseEntity<byte[]> getCRLs(@PathVariable String issuerName) throws CRLException {
 		X509CRL crl = this.crlService.generateCRL(issuerName);
 		
+		String crlName = crl.getIssuerX500Principal().toString();
+		crlName = crlName.replace("CN=", "");
+		
 		return ResponseEntity.ok()
-				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + crl.getIssuerX500Principal() + CRL_EXTENSTION)
+				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + crlName + CRL_EXTENSTION)
 				.body(Base64.encode(crl.getEncoded()));
 	}
 	
