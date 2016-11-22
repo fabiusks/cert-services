@@ -65,7 +65,6 @@ public class CRLService {
 	private String getCADN(CertificateAuthority ca) {
 		String caCN = ca.getIdentityContainer().getCertificate().getSubject().toString();
 		caCN = caCN.substring(0, caCN.indexOf(","));
-		caCN = caCN.replace("CN=", "");
 		
 		return caCN;
 	}
