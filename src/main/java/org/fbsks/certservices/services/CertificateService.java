@@ -116,8 +116,6 @@ public class CertificateService {
 		X509ExtensionUtils x509ExtensionUtils = new X509ExtensionUtils(digCalc);
 	
 		v3CertGen.addExtension(Extension.subjectKeyIdentifier, false, x509ExtensionUtils.createSubjectKeyIdentifier(subjectPubKeyInfo));
-		
-		//TODO Generating certificate with invalid signature when inserting this field (verify)
 		v3CertGen.addExtension(Extension.authorityKeyIdentifier, false, x509ExtensionUtils.createAuthorityKeyIdentifier(issuerPubKeyInfo));
 	}
 

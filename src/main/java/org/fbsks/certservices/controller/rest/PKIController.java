@@ -77,7 +77,7 @@ public class PKIController {
 		userPKCS12.store(output, DEFAULT_PASSWORD.toCharArray());
 		
 		return ResponseEntity.ok()
-				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + userIdentity.getCertificate().getSubject().toString().replaceFirst("CN=",  "") + P12_EXTENSTION)
+				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + getCertificateName(userIdentity.getCertificate()) + P12_EXTENSTION)
 				.body(Base64.encode(output.toByteArray()));
 	}
 	
@@ -100,7 +100,15 @@ public class PKIController {
 		X509CertificateHolder caCertificate = this.pkiService.getCertificateChain(issuerName);
 		
 		return ResponseEntity.ok()
-				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + caCertificate.getSubject().toString().replaceFirst("CN=",  "") + CER_EXTENSTION)
+				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + getCertificateName(caCertificate) + CER_EXTENSTION)
 				.body(Base64.encode(caCertificate.getEncoded()));
+	}
+	
+	private String getCertificateName(X509CertificateHolder cert) {
+		String caCN = cert.getSubject().toString();
+		caCN = caCN.substring(0, caCN.indexOf(","));
+		caCN = caCN.replace("CN=", "");
+		
+		return caCN;
 	}
 }
