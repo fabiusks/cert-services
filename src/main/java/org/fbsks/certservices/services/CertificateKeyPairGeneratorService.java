@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class CertificateKeyPairGeneratorService {
 
 	private static final String KEYS_ALG = "RSA";
+	//TODO Use BouncyCastleProvider Enum
 	private static final String BC_PROV = "BC";
 	
 	private static final int DEFAULT_KEY_SIZE = 4096;
