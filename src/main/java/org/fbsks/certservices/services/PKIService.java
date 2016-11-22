@@ -1,9 +1,11 @@
 package org.fbsks.certservices.services;
 
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSSignedData;
 import org.fbsks.certservices.model.CAIdentityContainer;
 import org.fbsks.certservices.model.CertificateAuthority;
 import org.fbsks.certservices.model.IdentityContainer;
@@ -24,71 +26,81 @@ public class PKIService {
 
 	@Autowired
 	private CertificateService certificateService;
-	
+
 	@Autowired
 	private CertificateKeyPairGeneratorService keyPairGenerator;
-	
+
 	@Autowired
 	private PKIRepository pkiRepository;
-	
+
 	@Autowired
 	private CertificateAuthorityRepository caRepository;
-	
+
 	@Autowired
 	private CAIdentityContainerRepository caIdentityContainerRepository;
-	
+
+	@Autowired
+	private P7BService p7bService;
+
 	private static final String ROOT_CA = "ROOTCA";
-	
+
 	public PKI generatePKI(String pkiName) {
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
-		
+
 		X509CertificateHolder rootCertificate = this.certificateService.generateSelfSignedCertificate(pkiName + ROOT_CA, keyPair);
-		
+
 		CAIdentityContainer identityContainer = new CAIdentityContainer(rootCertificate, keyPair.getPrivate());
 		caIdentityContainerRepository.save(identityContainer);
-		
+
 		CertificateAuthority rootCa = new CertificateAuthority(pkiName + ROOT_CA, identityContainer);
 		caRepository.save(rootCa);
-		
+
 		PKI pki = new PKI(pkiName, rootCa);
 		rootCa.setPki(pki);
-		
+
 		pkiRepository.save(pki);
-	
+
 		return pki;
 	}
-	
+
 	public List<PKI> listPKIs() {
 		return pkiRepository.findAll();
 	}
 
 	public IdentityContainer generateIdentity(String pkiName, String subjectName) {	
 		PKI retrievedPKI = pkiRepository.findOneByName(pkiName);
-		
+
 		if(retrievedPKI == null) {
 			throw new RuntimeException("Unable to find PKI with name: " + pkiName);
 		}
-		
+
 		CertificateAuthority rootCA = retrievedPKI.getCas().get(0);
-		
+
 		X509CertificateHolder rootCertificate = rootCA.getIdentityContainer().getCertificate();
 		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
 		KeyPair issuerKeyPair = new KeyPair(rootCA.getIdentityContainer().getPublicKey(), rootCA.getIdentityContainer().getPrivateKey());
 		X509CertificateHolder finalUserCertificate = this.certificateService.generateCertificate(subjectName, userKeyPair.getPublic(), rootCA.getName(), issuerKeyPair);
-		
+
 		IdentityContainer identifyContainer = new IdentityContainer(rootCertificate, finalUserCertificate, userKeyPair.getPrivate());
 
 		return identifyContainer;
 	}
 
-	public X509CertificateHolder getCertificateChain(String subjectName) {
-		CertificateAuthority ca = this.caRepository.findOneByName(subjectName + ROOT_CA);
-		
-		if(ca == null) {
-			throw new RuntimeException("Unable to find Certificate Authority with name: " + subjectName);
+	public CMSSignedData getCertificateChain(String subjectName) {
+		try {
+			CertificateAuthority ca = this.caRepository.findOneByName(subjectName + ROOT_CA);
+
+			if(ca == null) {
+				throw new RuntimeException("Unable to find Certificate Authority with name: " + subjectName);
+			}
+			
+			X509CertificateHolder caCertificate = ca.getIdentityContainer().getCertificate();
+			PrivateKey caPrivateKey = ca.getIdentityContainer().getPrivateKey();
+			
+			return this.p7bService.generateP7B(caCertificate, caPrivateKey);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Error while getting certiticate chain : " + e.getMessage(), e);
 		}
-		
-		return ca.getIdentityContainer().getCertificate();
-		
 	}
 }

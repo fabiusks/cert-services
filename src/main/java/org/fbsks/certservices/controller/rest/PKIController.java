@@ -11,6 +11,7 @@ import java.security.cert.X509CRL;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.util.encoders.Base64;
 import org.fbsks.certservices.controller.rest.jsonview.PKISummary;
 import org.fbsks.certservices.model.IdentityContainer;
@@ -50,7 +51,9 @@ public class PKIController {
 	
 	private static final String P12_EXTENSTION = ".p12";
 	private static final String CRL_EXTENSTION = ".crl";
-	private static final String CER_EXTENSTION = ".cer";
+	private static final String P7B_EXTENSTION = ".p7b";
+	
+	private static final String CHAIN_ID = "Chain";
 	
 	private static final String CONTENT_DISPOSITION_HEADER = "content-disposition";
 	private static final String CONTENT_DISPOSITION_ARGS = "attachment; filename=";
@@ -97,11 +100,11 @@ public class PKIController {
 	//TODO Response Entity returning could be revised (better standard ways to implement?)
 	@RequestMapping(path="/{issuerName}/cert", method=RequestMethod.GET)
 	public ResponseEntity<byte[]> getAIA(@PathVariable String issuerName) throws CRLException, IOException {
-		X509CertificateHolder caCertificate = this.pkiService.getCertificateChain(issuerName);
+		CMSSignedData chain = this.pkiService.getCertificateChain(issuerName);
 		
 		return ResponseEntity.ok()
-				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + getCertificateName(caCertificate) + CER_EXTENSTION)
-				.body(Base64.encode(caCertificate.getEncoded()));
+				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + issuerName + CHAIN_ID + P7B_EXTENSTION)
+				.body(Base64.encode(chain.getEncoded()));
 	}
 	
 	private String getCertificateName(X509CertificateHolder cert) {

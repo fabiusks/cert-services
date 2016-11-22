@@ -3,9 +3,11 @@ package org.fbsks.certservices.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSSignedData;
 import org.fbsks.certservices.BaseTest;
 import org.fbsks.certservices.model.IdentityContainer;
 import org.fbsks.certservices.model.PKI;
@@ -66,10 +68,14 @@ public class PKIServiceTest extends BaseTest {
 	public void shouldGetCACertificate() {
 		PKI pki = this.pkiService.generatePKI(TEST_PKI_NAME);
 		
-		X509CertificateHolder caCert = this.pkiService.getCertificateChain(TEST_PKI_NAME);
+		CMSSignedData certChainSignedData = this.pkiService.getCertificateChain(TEST_PKI_NAME);
+		
+		@SuppressWarnings("unchecked")
+		List<X509CertificateHolder> certChain = new ArrayList<X509CertificateHolder>(certChainSignedData.getCertificates().getMatches(null));
+		
 		X509CertificateHolder retrievedCaCert = pki.getCas().get(0).getIdentityContainer().getCertificate();
 		
-		assertEquals(caCert, retrievedCaCert);
+		assertEquals(certChain.get(0), retrievedCaCert);
 	}
 	
 	@Test(expected=RuntimeException.class)
