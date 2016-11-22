@@ -24,7 +24,7 @@ Access http://localhost:8080 and you should get to the main web interface. There
 
 ## Contributing
 
-There's plenty of work to do. Contact me if you want to align about the best ways of contributing to the project. But also feel free to send a Pull Request.
+There's plenty of work to do. Contact me if you want to align about the best ways of contributing to the project. But also feel free to send a Pull Request and we'll analyse.
 
 ## License
 
