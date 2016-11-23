@@ -1,8 +1,6 @@
 # Cert-services
 
-[![Build Status](https://travis-ci.org/fabiusks/cert-services.svg?branch=master)](https://travis-ci.org/fabiusks/cert-services)
-
-[![Coverage Status](https://coveralls.io/repos/github/fabiusks/cert-services/badge.svg?branch=master)](https://coveralls.io/github/fabiusks/cert-services?branch=master)
+[![Build Status](https://travis-ci.org/fabiusks/cert-services.svg?branch=master)](https://travis-ci.org/fabiusks/cert-services) [![Coverage Status](https://coveralls.io/repos/github/fabiusks/cert-services/badge.svg?branch=master)](https://coveralls.io/github/fabiusks/cert-services?branch=master)
 
 (The project is under development and has many limitations. Many improvements and refactoring needing to be done. Feel free to contribute :))
 
