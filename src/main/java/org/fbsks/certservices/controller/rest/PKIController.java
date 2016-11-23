@@ -10,7 +10,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
 import java.util.List;
 
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.util.encoders.Base64;
 import org.fbsks.certservices.controller.rest.jsonview.PKISummary;
@@ -19,6 +18,7 @@ import org.fbsks.certservices.model.PKI;
 import org.fbsks.certservices.services.CRLService;
 import org.fbsks.certservices.services.PKCS12ConversorService;
 import org.fbsks.certservices.services.PKIService;
+import org.fbsks.certservices.utils.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,8 +79,10 @@ public class PKIController {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		userPKCS12.store(output, DEFAULT_PASSWORD.toCharArray());
 		
+		String certificateCN = GeneralUtils.getParsedCertificateCommonName(userIdentity.getCertificate());
+		
 		return ResponseEntity.ok()
-				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + getCertificateName(userIdentity.getCertificate()) + P12_EXTENSTION)
+				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + certificateCN + P12_EXTENSTION)
 				.body(Base64.encode(output.toByteArray()));
 	}
 	
@@ -91,8 +93,7 @@ public class PKIController {
 	public ResponseEntity<byte[]> getCRLs(@PathVariable String issuerName) throws CRLException {
 		X509CRL crl = this.crlService.generateCRL(issuerName);
 		
-		String crlName = crl.getIssuerX500Principal().toString();
-		crlName = crlName.replace("CN=", "");
+		String crlName = GeneralUtils.getParsedCRLX500Principal(crl);
 		
 		return ResponseEntity.ok()
 				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + crlName + CRL_EXTENSTION)
@@ -108,13 +109,5 @@ public class PKIController {
 		return ResponseEntity.ok()
 				.header(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_ARGS + issuerName + CHAIN_ID + P7B_EXTENSTION)
 				.body(Base64.encode(chain.getEncoded()));
-	}
-	
-	private String getCertificateName(X509CertificateHolder cert) {
-		String caCN = cert.getSubject().toString();
-		caCN = caCN.substring(0, caCN.indexOf(","));
-		caCN = caCN.replace("CN=", "");
-		
-		return caCN;
 	}
 }

@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Service;
 public class CertificateKeyPairGeneratorService {
 
 	private static final String KEYS_ALG = "RSA";
-	//TODO Use BouncyCastleProvider Enum
-	private static final String BC_PROV = "BC";
 	
 	private static final int DEFAULT_KEY_SIZE = 4096;
 
@@ -26,7 +25,7 @@ public class CertificateKeyPairGeneratorService {
 	
 	public KeyPair generateKeyPair(int keySize) {
 		try {
-			KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEYS_ALG, BC_PROV);
+			KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEYS_ALG, BouncyCastleProvider.PROVIDER_NAME);
 
 			keyGen.initialize(keySize, new SecureRandom());
 			KeyPair keyPair = keyGen.generateKeyPair();
