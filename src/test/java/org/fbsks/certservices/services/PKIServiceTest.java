@@ -14,6 +14,8 @@ import org.fbsks.certservices.repository.PKIRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.tc.exception.RuntimeExceptionHelper;
+
 /**
  * 
  * @author fabio.resner
@@ -28,6 +30,7 @@ public class PKIServiceTest extends BaseTest {
 	private PKIRepository pkiRepository; 
 	
 	private static final String TEST_PKI_NAME = "TESTPKI";
+	private static final String NON_EXISTING_PKI_NAME = "I DONT EXIST";
 	private static final String TEST_FINAL_USER_CERT_NAME = "TestFinalUser";
 	private static final String NON_EXISITING_CA_NAME = "Hi im a ca and I don't exist";
 	
@@ -61,6 +64,11 @@ public class PKIServiceTest extends BaseTest {
 		IdentityContainer finalUserCertificate = this.pkiService.generateIdentity(pki.getName(), TEST_FINAL_USER_CERT_NAME);
 		
 		assertEquals(pki.getCas().get(0).getIdentityContainer().getCertificate().getSubject(), finalUserCertificate.getCertificate().getIssuer());
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void shouldFailGeneratingIdentityBecauseOfUnknowCA() {
+		this.pkiService.generateIdentity(NON_EXISTING_PKI_NAME, TEST_FINAL_USER_CERT_NAME);
 	}
 	
 	@Test
