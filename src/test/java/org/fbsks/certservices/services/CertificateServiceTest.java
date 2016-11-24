@@ -1,6 +1,7 @@
 package org.fbsks.certservices.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,10 +68,23 @@ public class CertificateServiceTest extends BaseTest {
 	@Test
 	public void shouldGenerateCertificate() throws CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, IOException {
 		CertificateKeyPairGeneratorService keyPairGenerator = new CertificateKeyPairGeneratorService();
-		
-		KeyPair issuerKeyPair = keyPairGenerator.generateKeyPair();
-		KeyPair userKeyPair = keyPairGenerator.generateKeyPair();
-		
+		runTestCode(keyPairGenerator.generateKeyPair(), keyPairGenerator.generateKeyPair());
+	}
+	
+	//TODO Activate and FixIT
+//	@Test
+	public void shouldGenerateCertificateWithCustomKeyPairSize() throws CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, IOException {
+		CertificateKeyPairGeneratorService keyPairGenerator = new CertificateKeyPairGeneratorService();
+		runTestCode(keyPairGenerator.generateKeyPair(128), keyPairGenerator.generateKeyPair(128));
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void shouldFailGeneratingCertificateBecauseOfInvalidKeyPair() throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, IOException {
+		runTestCode(null, null);
+		assertTrue(false);
+	}
+	
+	private void runTestCode(KeyPair userKeyPair, KeyPair issuerKeyPair) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, IOException {	
 		X509CertificateHolder certHolder = this.certificateGenerator.generateCertificate(SUBJECT_NAME, userKeyPair.getPublic(), ISSUER_NAME, issuerKeyPair);
 
 		assertEquals(new X500Name(FINAL_ISSUER_NAME), certHolder.getIssuer());
@@ -86,10 +100,5 @@ public class CertificateServiceTest extends BaseTest {
 		FileOutputStream fileOut = new FileOutputStream("target" + System.getProperty("file.separator") + "test.cer");
 		fileOut.write(certHolder.getEncoded());
 		fileOut.close();
-	}
-	
-	@Test
-	public void shouldFailGeneratingCertificateBecauseOfInvalidKeyPair() {
-		//TODO
 	}
 }

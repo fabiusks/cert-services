@@ -1,7 +1,6 @@
 package org.fbsks.certservices.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +80,6 @@ public class PKIServiceTest extends BaseTest {
 	@Test(expected=RuntimeException.class)
 	public void shouldFailtGetCACertificate() {
 		this.pkiService.getCertificateChain(NON_EXISITING_CA_NAME);
+		assertTrue(false);
 	}
 }

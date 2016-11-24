@@ -21,7 +21,7 @@ public class CertificateKeyPairGeneratorServiceTest extends BaseTest {
 	/*
 	 * Lower key-size for faster test execution
 	 */
-	private static final int KEY_SIZE_1024 = 128;
+	private static final int KEY_SIZE_128 = 128;
 	
 	@Test
 	public void shouldGenerateDefaultKeyPair() {
@@ -31,7 +31,7 @@ public class CertificateKeyPairGeneratorServiceTest extends BaseTest {
 	
 	@Test
 	public void shouldGenerateKeyPairWithCustomKeySize() {
-		KeyPair keyPair = this.keyGenerator.generateKeyPair(KEY_SIZE_1024);
+		KeyPair keyPair = this.keyGenerator.generateKeyPair(KEY_SIZE_128);
 		assertNotNull(keyPair);
 	}
 	
