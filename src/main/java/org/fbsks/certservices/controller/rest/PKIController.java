@@ -47,8 +47,6 @@ public class PKIController {
 	@Autowired
 	private CRLService crlService;
 	
-	private static final String DEFAULT_PASSWORD = "123456";
-	
 	private static final String P12_EXTENSTION = ".p12";
 	private static final String CRL_EXTENSTION = ".crl";
 	private static final String P7B_EXTENSTION = ".p7b";
@@ -72,12 +70,12 @@ public class PKIController {
 	//TODO Review exception thrown at this point
 	//TODO Response Entity returning could be revised (better standard ways to implement?)
 	@RequestMapping(path="/cert/new", method = RequestMethod.POST)
-	public ResponseEntity<byte[]> newPKICertificate(@RequestParam String pkiName, @RequestParam String subjectName) throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+	public ResponseEntity<byte[]> newPKICertificate(@RequestParam String pkiName, @RequestParam String subjectName, @RequestParam String password) throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		IdentityContainer userIdentity = this.pkiService.generateIdentity(pkiName, subjectName);
 		KeyStore userPKCS12 = p12Conversor.generatePKCS12(userIdentity);
 		
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		userPKCS12.store(output, DEFAULT_PASSWORD.toCharArray());
+		userPKCS12.store(output, password.toCharArray());
 		
 		String certificateCN = GeneralUtils.getParsedCertificateCommonName(userIdentity.getCertificate());
 		
