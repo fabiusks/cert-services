@@ -22,6 +22,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<bouncy.castle.version>1.46</bouncy.castle.version>
+		
+		<jacoco.plugin.version>0.7.6.201602180812</jacoco.plugin.version>
+		<coveralls.plugin.version>2.2.0</coveralls.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -56,23 +60,20 @@
 			<artifactId>spring-boot-starter-remote-shell</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk16</artifactId>
-			<version>1.46</version>
+			<version>${bouncy.castle.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcmail-jdk16 -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcmail-jdk16</artifactId>
-			<version>1.46</version>
+			<version>${bouncy.castle.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.11.0</version>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache-clustered</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -86,13 +87,13 @@
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>2.2.0</version>
+				<version>${coveralls.plugin.version}</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.6.201602180812</version>
+				<version>${jacoco.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>
@@ -120,7 +121,7 @@
 										<limit>
 											<counter>COMPLEXITY</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.20</minimum>
+											<minimum>0.75</minimum>
 										</limit>
 									</limits>
 								</rule>
