@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,13 +35,13 @@ public class CertificatesController {
 	//TODO Review exception thrown at this point
 	//TODO Response Entity returning could be revised (could be done better)
 	@RequestMapping(path="/new/self-signed", method=RequestMethod.POST)
-	public ResponseEntity<byte[]> generateSelfSignedCerficate() throws IOException {
+	public ResponseEntity<byte[]> generateSelfSignedCerficate(@RequestParam String subjectName) throws IOException {
 		LOGGER.info("Received new self-signed certificate request");
 		
-		X509CertificateHolder certificate = certService.generateSelfSignedCertificate("CN=TestSubject", keyPairGenerator.generateKeyPair());
+		X509CertificateHolder certificate = certService.generateSelfSignedCertificate(subjectName, keyPairGenerator.generateKeyPair());
 		
 		return ResponseEntity.ok()
-				.header("content-disposition", "attachment; filename=" + certificate.getSubject() + ".cer")
+				.header("content-disposition", "attachment; filename=" + subjectName + ".cer")
 				.body(Base64.encode(certificate.getEncoded()));
 	}
 }

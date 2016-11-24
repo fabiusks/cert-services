@@ -49,24 +49,9 @@
 				<h2>Self Signed Certificate Generation</h2>
 				<form name="certGenForm" action="http://localhost:8080/rest/cert/new/self-signed" method="POST">		
 					<label>Enter the subject name:</label>
-					<input type="text" id="subjectField" name="subject" placeholder="Subject Name">
+					<input type="text" id="subjectField" name="subjectName" placeholder="Subject Name">
 					<p></p>
 				
-					<button type="submit" class="btn btn-primary">Generate</button>
-				</form>
-			</div>
-			
-			<div class="jumbotron">
-				<h2>Certificate Generation</h2>
-				<form name="certGenForm" action="http://localhost:8080/rest/cert/new" method="POST">
-					<label>Enter the issuer name:</label>
-					<input type="text" id="issuerField" name="issuer" placeholder="Issuer Name">
-					<p></p>
-					
-					<label>Enter the subject name:</label>
-					<input type="text" id="subjectField" name="subject" placeholder="Subject Name">
-					<p></p>
-					
 					<button type="submit" class="btn btn-primary">Generate</button>
 				</form>
 			</div>
