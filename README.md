@@ -29,4 +29,4 @@ There's plenty of work to do. Contact me if you want to align about the best way
 ## License
 
 MIT License
-Copyright (c) 2016 Fabio Resner
+Copyright (c) 2016 Fabio Resner.
