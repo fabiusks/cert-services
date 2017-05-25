@@ -3,9 +3,14 @@ language: java
 jdk:
    - oraclejdk8
 
-after_success:
-   - mvn clean cobertura:cobertura
-   - mvn test
+build:
+  ci:
+    #Create folders for test and code coverage
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+
+    #Run test and code coverage and output results to the right folder
+    - mvn clean cobertura:cobertura
 
 notifications:
   email:
