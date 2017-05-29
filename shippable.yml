@@ -11,7 +11,7 @@ build:
 
     #Run test and code coverage and output results to the right folder
     - mvn install
-    - cp target/site/jacoco/jacoco.xml shippable/codecoverage
+    - cp -r target shippable/codecoverage
 
 notifications:
   email:
