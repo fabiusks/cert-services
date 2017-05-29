@@ -10,7 +10,7 @@ build:
     - mkdir -p shippable/codecoverage
 
     #Run test and code coverage and output results to the right folder
-    - mvn clean cobertura:cobertura
+    - cp target shippable/codecoverage
 
 notifications:
   email:
