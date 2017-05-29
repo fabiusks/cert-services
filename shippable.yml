@@ -12,6 +12,13 @@ build:
     #Run test and code coverage and output results to the right folder
     - mvn install
     - cp -r target shippable/codecoverage
+    
+env:
+  global:
+    - APP_NAME=certservices
+
+after_success :
+    - git push -f git@heroku.com:certservices.git master
 
 notifications:
   email:
