@@ -18,7 +18,7 @@ env:
     - APP_NAME=certservices
 
 after_success :
-    - git push -f git@heroku.com:certservices.git master
+    - git push -f git@heroku.com:$APP_NAME.git master
 
 notifications:
   email:
