@@ -10,8 +10,8 @@ build:
     - mkdir -p shippable/codecoverage
 
     #Run test and code coverage and output results to the right folder
-    - mvn cobertura:cobertura
-    - cp target shippable/codecoverage
+    - mvn install
+    - cp target/site/jacoco/jacoco.xml shippable/codecoverage
 
 notifications:
   email:
