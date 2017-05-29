@@ -99,7 +99,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					<reportsDirectory>../shippable/testresults</reportsDirectory>
+					<reportsDirectory>shippable/testresults</reportsDirectory>
 				</configuration>
 				<dependencies>
 					<dependency>
